@@ -43,7 +43,10 @@ module.exports = {
 
     async coletarFintwit(req, res){
 		try {
-			let perfis = ["cafecomferri", "albuquerque_af", "hbredda"]
+
+		    let perfis = ["cafecomferri", "albuquerque_af", "hbredda",
+		    "fernandocluiz", "josuenunes", "PabloSpyer",
+		    "quantzed", "MeninRibeiro"]
 		
 			let tweetsInseridos = 0
 			let tweetsExistentes = 0
