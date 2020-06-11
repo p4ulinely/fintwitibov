@@ -35,7 +35,7 @@ const listaMaisFrequentes = str => {
 }
 
 const atomizar = frase => {
-    const proibidos = ['.', ',', '', '(', ')', '{', '}', '[', ']']
+    const proibidos = [';', ':', '.', ',', '', '(', ')', '{', '}', '[', ']']
     let temp = []
     
     frase.split(' ').forEach(palavra => {
@@ -48,4 +48,5 @@ const atomizar = frase => {
     return temp
 } 
 
-module.exports = listaMaisFrequentes, atomizar
+module.exports = listaMaisFrequentes
+// exports.tokenize = atomizar
