@@ -84,8 +84,8 @@ module.exports = {
                             symbols: tweet.symbols
                         })
 
-                        tweetsInseridos += 1
-                    } else tweetsExistentes += 1
+                        tweetsInseridos++
+                    } else tweetsExistentes++
                 }
             }
 
@@ -142,7 +142,7 @@ module.exports = {
         }
     },
 
-    async listaFrequencia(req, res) {
+    async calcularFrequencia(req, res) {
         try {
 
             let frase = req.body.frase || ""
@@ -151,7 +151,7 @@ module.exports = {
 
             let freq = frase == "" ? "vazio" : atomizador.frequencia(frase)
 
-            console.log(` :: ${freq.length} frequencias calculadas`)
+            console.log(` :: ${freq.length} frequencias calculadas para "${frase}"`)
             
             res.json({ freq })
         } catch (err) {

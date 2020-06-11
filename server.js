@@ -30,7 +30,7 @@ const TwitterController = require('./src/controllers/TwitterController')
 app.get('/perfil/:perfil', TwitterController.getTweets)
 app.get('/coletar', TwitterController.coletarFintwit)
 app.get('/mostrar/:perfil?', TwitterController.mostrarFintwit)
-app.post('/frequencia', TwitterController.listaFrequencia)
+app.post('/frequencia', TwitterController.calcularFrequencia)
 
 app.listen(port, () => {
     console.log(`On PORT ${port}!`)
