@@ -9,12 +9,12 @@ app.use(express.json())
 
 // //////////////////////////////////////////// BD
 mongoose.connect(process.env.CONNECTION_STRING_BD, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 }).then(() => {
-	console.log('MongoDB is on!')
-}).catch((err) => {
-	console.log(`MongoDB: ${err}`)
+    console.log(`MongoDB is on!`)
+}).catch(err => {
+    console.log(`MongoDB: ${err}`)
 })
 mongoose.set('useFindAndModify', true)
 mongoose.set('useUnifiedTopology', true)
@@ -25,10 +25,12 @@ requireDir('./src/models')
 // //////////////////////////////////////////// controllets
 const TwitterController = require('./src/controllers/TwitterController')
 
+// //////////////////////////////////////////// rotas 
 app.get('/perfil/:perfil', TwitterController.getTweets)
 app.get('/coletar', TwitterController.coletarFintwit)
 app.get('/mostrar/:perfil?', TwitterController.mostrarFintwit)
 
-app.listen(process.env.PORT || 8000, () => {
-    console.log('Server is On (8000)!')
+const port = process.env.PORT || 8000
+app.listen(port, () => {
+    console.log(`On PORT ${port}!`)
 })

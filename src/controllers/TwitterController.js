@@ -1,7 +1,7 @@
 const twitter = require('twitter-lite')
-require('dotenv-safe').config()
 const mongoose = require('mongoose')
 const Fintwit = mongoose.model('Fintwit')
+require('dotenv-safe').config()
 
 const client = new twitter({
     subdomain: "api", // "api" is the default (change for other subdomains)
@@ -17,14 +17,15 @@ module.exports = {
         try {
 
             let perfil = req.params.perfil || ""
+            let tweets = []
 
             if (perfil.length < 1) perfil = "twitter"
+
+            console.log(`requesting tweets de "${perfil}"...`)
 
             const requestTwitter = await client.get("statuses/user_timeline", {
                 screen_name: perfil,
             })
-
-            let tweets = []
 
             for (let tweet of requestTwitter) {
                 tweets.push([tweet.id,
@@ -35,7 +36,7 @@ module.exports = {
 
             console.log("tweets coletados:", tweets.length)
 
-            return res.json(requestTwitter[0])
+            return res.json(tweets)
         } catch (err) {
             return res.status(400).json({
                     msg: err
@@ -108,6 +109,8 @@ module.exports = {
             const { page = 1 } = req.query
             let tweets = null
 
+            console.log("coletando do BD...")
+                
             if (perfil != "" && perfil != "todos" ){
                 tweets = await Fintwit.paginate({ perfil }, {
                     page,
@@ -125,6 +128,8 @@ module.exports = {
                     }
                 })
             }
+
+            console.log(`tweets coletados: ${tweets.total}, pagina: ${tweets.page}, paginas: ${tweets.pages}`)
 
             return res.json({ tweets })
 
