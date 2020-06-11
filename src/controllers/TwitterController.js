@@ -44,7 +44,7 @@ module.exports = {
             return res.json(tweets)
         } catch (err) {
             return res.status(400).json({
-                    msg: err
+                msg: "ErrorCatch"
             })
         }
     },
@@ -99,7 +99,7 @@ module.exports = {
 
         } catch (err) {
             return res.status(400).json({
-                msg: err
+                msg: "ErrorCatch"
             })
         }
     },
@@ -137,7 +137,7 @@ module.exports = {
 
         } catch (err) {
             return res.status(400).json({
-                msg: err
+                msg: "ErrorCatch"
             })
         }
     },
@@ -151,12 +151,12 @@ module.exports = {
 
             let freq = frase == "" ? "vazio" : atomizador.frequencia(frase)
 
-            console.log(freq)
+            console.log(` :: ${freq.length} frequencias calculadas`)
             
             res.json({ freq })
         } catch (err) {
             res.status(400).json({
-                msg: err
+                msg: "ErrorCatch"
             })
         }
     },

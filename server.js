@@ -4,6 +4,7 @@ const requireDir = require('require-dir')
 require('dotenv-safe').config()
 
 // iniciando app
+const port = process.env.PORT || 8000
 const app = express()
 app.use(express.json())
 
@@ -31,7 +32,6 @@ app.get('/coletar', TwitterController.coletarFintwit)
 app.get('/mostrar/:perfil?', TwitterController.mostrarFintwit)
 app.get('/frequencia/:frase', TwitterController.listaFrequencia)
 
-const port = process.env.PORT || 8000
 app.listen(port, () => {
     console.log(`On PORT ${port}!`)
 })
