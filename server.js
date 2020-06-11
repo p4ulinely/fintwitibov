@@ -29,6 +29,7 @@ const TwitterController = require('./src/controllers/TwitterController')
 app.get('/perfil/:perfil', TwitterController.getTweets)
 app.get('/coletar', TwitterController.coletarFintwit)
 app.get('/mostrar/:perfil?', TwitterController.mostrarFintwit)
+app.get('/frequencia/:frase', TwitterController.listaFrequencia)
 
 const port = process.env.PORT || 8000
 app.listen(port, () => {

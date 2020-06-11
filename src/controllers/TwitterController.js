@@ -1,6 +1,7 @@
 const twitter = require('twitter-lite')
 const mongoose = require('mongoose')
 const Fintwit = mongoose.model('Fintwit')
+const atomizador = require('./../services/atomiza')
 require('dotenv-safe').config()
 
 const client = new twitter({
@@ -11,6 +12,10 @@ const client = new twitter({
     access_token_key: process.env.ACCESS_TOKEN,
     access_token_secret: process.env.ACCESS_TOKEN_SECRET
 })
+
+let perfisFintwit = ["cafecomferri", "albuquerque_af", "hbredda",
+    "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed",
+    "MeninRibeiro"]
 
 module.exports = {
     async getTweets(req, res){
@@ -47,14 +52,11 @@ module.exports = {
     async coletarFintwit(req, res){
         try {
 
-            let perfis = ["cafecomferri", "albuquerque_af", "hbredda",
-            "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed",
-            "MeninRibeiro"]
         
             let tweetsInseridos = 0
             let tweetsExistentes = 0
 
-            for (let perfil of perfis) {
+            for (let perfil of perfisFintwit) {
 
                 console.log(`requesting tweets de "${perfil}"...`)
 
@@ -139,5 +141,25 @@ module.exports = {
             })
         }
     },
+
+    async listaFrequencia(req, res) {
+        try {
+
+            let frase = req.body.frase || ""
+            
+            console.log("calculando frequencias...")
+
+            let freq = frase == "" ? "vazio" : atomizador.frequencia(frase)
+
+            console.log(freq)
+            
+            res.json({ freq })
+        } catch (err) {
+            res.status(400).json({
+                msg: err
+            })
+        }
+    },
+
 }
 

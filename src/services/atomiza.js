@@ -8,6 +8,7 @@
 //     console.log(arr) //resultado final: um array de objetos com o token e sua frequencia
 // })
 
+// metodo que retorna frase como objeto de palavras e suas respectivas frequencias
 const listaMaisFrequentes = str => {
 
     const listaTokens = []
@@ -24,7 +25,7 @@ const listaMaisFrequentes = str => {
     }
 
     for(let token of tokensUnicos){
-        let qnt = listaTokens.filter(t => t === token).length
+        let qnt = listaTokens.filter(t => t == token).length
         tokensUnicosFrequencia.push({
             't': token,
             'f': qnt
@@ -34,23 +35,36 @@ const listaMaisFrequentes = str => {
     return tokensUnicosFrequencia
 }
 
+// metodo para atomizar frases em palavras
 const atomizar = frase => {
-    const proibidos = [';', ':', '.', ',', '', '(', ')', '{', '}', '[', ']']
+
+    const proibidos = [';', ',', '', '(', ')', '{', '}', '[', ']']
     let temp = []
     
     frase.split(' ').forEach(palavra => {
         palavra = palavra.toLowerCase()
 
+        // elimina caracteres proibidos
         let charsFiltrados = palavra.split('').filter(char => ( 
             !proibidos.includes(char)
         ))
 
         let palavraFiltrada = charsFiltrados.join('')
-        if(palavraFiltrada != '') temp.push(palavraFiltrada)
+        if(eUmaURL(palavraFiltrada)) palavraFiltrada = "" // elimina urls
+        if(palavraFiltrada != "") temp.push(palavraFiltrada)
     })
     
     return temp
-} 
+}
 
-module.exports = listaMaisFrequentes
+// metodo para verificar se string é URL ou não
+const eUmaURL = str => {
+
+    let eRegular = new RegExp(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi)
+
+    return (str.match(eRegular)) ? true : false
+}
+
+exports.frequencia = listaMaisFrequentes
+// module.exports = listaMaisFrequentes
 // exports.tokenize = atomizar
