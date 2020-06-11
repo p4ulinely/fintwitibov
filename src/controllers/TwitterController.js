@@ -6,10 +6,10 @@ const Fintwit = mongoose.model('Fintwit')
 const client = new twitter({
     subdomain: "api", // "api" is the default (change for other subdomains)
     version: "1.1", // version "1.1" is the default (change for other subdomains)
-    consumer_key: process.env.TWITTER_CONSUMER_KEY, // from Twitter.
-    consumer_secret: process.env.TWITTER_CONSUMER_SECRET, // from Twitter.
-    access_token_key: process.env.ACCESS_TOKEN, // from your User (oauth_token)
-    access_token_secret: process.env.ACCESS_TOKEN_SECRET// from your User (oauth_token_secret)
+    consumer_key: process.env.TWITTER_CONSUMER_KEY,
+    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+    access_token_key: process.env.ACCESS_TOKEN,
+    access_token_secret: process.env.ACCESS_TOKEN_SECRET
 })
 
 module.exports = {
@@ -21,17 +21,19 @@ module.exports = {
             if (perfil.length < 1) perfil = "twitter"
 
             const requestTwitter = await client.get("statuses/user_timeline", {
-                    screen_name: perfil,
+                screen_name: perfil,
             })
 
             let tweets = []
 
             for (let tweet of requestTwitter) {
-                    tweets.push([tweet.id, tweet.created_at, tweet.text])
+                tweets.push([tweet.id,
+                    tweet.created_at,
+                    tweet.text
+                ])
             }
 
             console.log("tweets coletados:", tweets.length)
-            // console.log(requestTwitter[0])
 
             return res.json(requestTwitter[0])
         } catch (err) {
