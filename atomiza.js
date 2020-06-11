@@ -40,7 +40,11 @@ const atomizar = frase => {
     
     frase.split(' ').forEach(palavra => {
         palavra = palavra.toLowerCase()
-        let charsFiltrados = palavra.split('').filter(char => !proibidos.includes(char))
+
+        let charsFiltrados = palavra.split('').filter(char => ( 
+            !proibidos.includes(char)
+        ))
+
         let palavraFiltrada = charsFiltrados.join('')
         if(palavraFiltrada != '') temp.push(palavraFiltrada)
     })

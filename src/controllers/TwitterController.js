@@ -14,113 +14,123 @@ const client = new twitter({
 
 module.exports = {
     async getTweets(req, res){
-		try {
+        try {
 
-			let perfil = req.params.perfil || ""
+            let perfil = req.params.perfil || ""
 
-			if (perfil.length < 1) perfil = "twitter"
+            if (perfil.length < 1) perfil = "twitter"
 
-			const requestTwitter = await client.get("statuses/user_timeline", {
-				screen_name: perfil,
-			})
+            const requestTwitter = await client.get("statuses/user_timeline", {
+                    screen_name: perfil,
+            })
 
-			let tweets = []
+            let tweets = []
 
-			for (let tweet of requestTwitter) {
-				tweets.push([tweet.id, tweet.created_at, tweet.text])
-			}
+            for (let tweet of requestTwitter) {
+                    tweets.push([tweet.id, tweet.created_at, tweet.text])
+            }
 
-			console.log("tweets coletados:", tweets.length);
-			// console.log(requestTwitter[0])
+            console.log("tweets coletados:", tweets.length)
+            // console.log(requestTwitter[0])
 
-			return res.json(requestTwitter[0])
-		} catch (err) {
-			return res.status(400).json({
-				msg: err
-			})
-		}
+            return res.json(requestTwitter[0])
+        } catch (err) {
+            return res.status(400).json({
+                    msg: err
+            })
+        }
     },
 
     async coletarFintwit(req, res){
-		try {
+        try {
 
-		    let perfis = ["cafecomferri", "albuquerque_af", "hbredda",
-		    "fernandocluiz", "josuenunes", "PabloSpyer",
-		    "quantzed", "MeninRibeiro"]
-		
-			let tweetsInseridos = 0
-			let tweetsExistentes = 0
+            let perfis = ["cafecomferri", "albuquerque_af", "hbredda",
+            "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed",
+            "MeninRibeiro"]
+        
+            let tweetsInseridos = 0
+            let tweetsExistentes = 0
 
-			for (let perfil of perfis) {
-				const requestTwitter = await client.get("statuses/user_timeline", {
-					screen_name: perfil,
-					count: 200
-				})
+            for (let perfil of perfis) {
 
-				for (let tweet of requestTwitter) {
-					const tweetExiste = await Fintwit.find({
-						tweet_id: tweet.id
-					})
+                console.log(`requesting tweets de "${perfil}"...`)
 
-					if (tweetExiste.length == 0) {
-						Fintwit.create({
-							perfil,
-							tweet_id: tweet.id,
-							created_at: tweet.created_at,
-							text: tweet.text,
-							hashtags: tweet.hashtags,
-							symbols: tweet.symbols
-						})
+                const requestTwitter = await client.get("statuses/user_timeline", {
+                    screen_name: perfil,
+                    count: 200
+                })
 
-						tweetsInseridos += 1
-					} else tweetsExistentes += 1
-				}
-			}
+                console.log(`  :: ${requestTwitter.length} tweets coletados!`)
+                console.log(`verificando se tweets já existem...`)
 
-			return res.json({
-				"tweets inseridos": tweetsInseridos,
-				"tweets existentes": tweetsExistentes
-			})
+                for (let tweet of requestTwitter) {
 
-		} catch (err) {
-			return res.status(400).json({
-				msg: err
-			})
-		}
-	},
+                    const tweetExiste = await Fintwit.find({
+                        tweet_id: tweet.id
+                    })
+
+                    if (tweetExiste.length == 0) {
+                        await Fintwit.create({
+                            perfil,
+                            tweet_id: tweet.id,
+                            created_at: tweet.created_at,
+                            text: tweet.text,
+                            hashtags: tweet.hashtags,
+                            symbols: tweet.symbols
+                        })
+
+                        tweetsInseridos += 1
+                    } else tweetsExistentes += 1
+                }
+            }
+
+            console.log("inseridos:", tweetsInseridos)
+            console.log("já existentes:", tweetsExistentes)
+
+            return res.json({
+                "inseridos": tweetsInseridos,
+                "existentes": tweetsExistentes
+            })
+
+        } catch (err) {
+            return res.status(400).json({
+                msg: err
+            })
+        }
+    },
 	
-	async mostrarFintwit(req, res){
-		try {
-			
-			const { perfil = "todos" } = req.params
-			const { page = 1 } = req.query
-			let tweets = null
+    async mostrarFintwit(req, res){
+        try {
+            
+            const { perfil = "todos" } = req.params
+            const { page = 1 } = req.query
+            let tweets = null
 
-			if (perfil != "" && perfil != "todos" ){
-				tweets = await Fintwit.paginate({ perfil }, {
-					page,
-					limit: 20, 
-					sort: {
-						created_at: -1
-					}
-				})
-			} else {
-				tweets = await Fintwit.paginate({}, {
-					page,
-					limit: 20, 
-					sort: {
-						created_at: -1
-					}
-				})
-			}
+            if (perfil != "" && perfil != "todos" ){
+                tweets = await Fintwit.paginate({ perfil }, {
+                    page,
+                    limit: 50, 
+                    sort: {
+                        created_at: -1
+                    }
+                })
+            } else {
+                tweets = await Fintwit.paginate({}, {
+                    page,
+                    limit: 50, 
+                    sort: {
+                        created_at: -1
+                    }
+                })
+            }
 
-			return res.json({ tweets })
+            return res.json({ tweets })
 
-		} catch (err) {
-			return res.status(400).json({
-				msg: err
-			})
-		}
+        } catch (err) {
+            return res.status(400).json({
+                msg: err
+            })
+        }
     },
 }
 

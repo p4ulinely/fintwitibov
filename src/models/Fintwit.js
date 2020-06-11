@@ -2,29 +2,29 @@ const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate')
 
 const FintwitSchema = new mongoose.Schema({
-	perfil: {
-		type: String,
-		required: true
+    perfil: {
+        type: String,
+        required: true
 
-	}, tweet_id: {
-		type: Number,
-		required: true,
-		unique: true
+    }, tweet_id: {
+        type: Number,
+        required: true,
+        unique: true
 
-	}, created_at: {
-		type: Date,
-		required: true,
-		
-	}, text: {
-		type: String,
-		required: true
+    }, created_at: {
+        type: Date,
+        required: true
+            
+    }, text: {
+        type: String,
+        required: true
 
-	}, hashtags: [
-		String
+    }, hashtags: [
+        String
 
-	], symbols: [
-		String
-	]
+    ], symbols: [
+        String
+    ]
 })
 
 FintwitSchema.plugin(mongoosePaginate)
