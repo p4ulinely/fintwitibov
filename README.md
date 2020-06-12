@@ -5,7 +5,7 @@ This project has the purpose of find out a trustworthy approach to make a sentim
 ## Array of Twitter Profiles
 
 ```javascript
-["cafecomferri", "albuquerque_af", "hbredda", "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed", "MeninRibeiro"]
+"cafecomferri", "albuquerque_af", "hbredda", "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed", "MeninRibeiro", "ThiagoNigro", "helocruz"
 ``` 
 
 There are much more profiles to watch, but due to limitations on the data storing, these are the monitored profiles so far.
@@ -27,7 +27,7 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
-- Endpoint to display a chart of Tweets Quantity VS IBOV Volatility.
+- Endpoint to display a chart of Tweets intensity VS IBOV volatility.
 - Endpoint to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.

@@ -15,10 +15,10 @@ const client = new twitter({
 
 let perfisFintwit = ["cafecomferri", "albuquerque_af", "hbredda",
     "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed",
-    "MeninRibeiro"]
+    "MeninRibeiro", "ThiagoNigro", "helocruz"]
 
 module.exports = {
-    async getTweets(req, res){
+    async mostraTweets(req, res){
         try {
 
             let perfil = req.params.perfil || "twitter"
@@ -30,6 +30,7 @@ module.exports = {
                 screen_name: perfil,
                 include_entities: true,
                 count: 200,
+                result_type: "recent" // default: mixed
                 // until: "2020-06-11"
             })
 
@@ -58,8 +59,10 @@ module.exports = {
 
             let tweetsInseridos = 0
             let tweetsExistentes = 0
+            const perfilEspecifico = req.params.perfil
+            const perfis = perfilEspecifico ? [perfilEspecifico] : perfisFintwit
 
-            for (let perfil of perfisFintwit) {
+            for (let perfil of perfis) {
 
                 console.log(`requesting tweets de "${perfil}"...`)
 
@@ -67,7 +70,8 @@ module.exports = {
                     screen_name: perfil,
                     include_entities: true,
                     count: 200,
-                    // until: "2020-06-01"
+                    result_type: "recent", // default: mixed
+                    // until: "2020-06-06"
                 })
 
                 console.log(` :: ${requestTwitter.length} tweets coletados!`)

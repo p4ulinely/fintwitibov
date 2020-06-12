@@ -27,8 +27,8 @@ requireDir('./src/models')
 const TwitterController = require('./src/controllers/TwitterController')
 
 // //////////////////////////////////////////// rotas 
-app.get('/perfil/:perfil?', TwitterController.getTweets)
-app.get('/coletar', TwitterController.coletarFintwit)
+app.get('/perfil/:perfil?', TwitterController.mostraTweets)
+app.get('/coletar/:perfil?', TwitterController.coletarFintwit)
 app.get('/mostrar/:perfil?', TwitterController.mostrarFintwit)
 app.post('/frequencia', TwitterController.calcularFrequencia)
 
