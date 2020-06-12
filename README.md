@@ -8,7 +8,7 @@ This project has the purpose of find out a trustworthy approach to make a sentim
 ["cafecomferri", "albuquerque_af", "hbredda", "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed", "MeninRibeiro"]
 ``` 
 
-There are much more profiles to watch, but due to limitations on the data storing, these are the profiles monitored so far.
+There are much more profiles to watch, but due to limitations on the data storing, these are the monitored profiles so far.
 
 ## Stack
 
@@ -27,6 +27,7 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
-- 
--
+- Endpoint to watch tweets from specific profile
+	- Generate JSON of frequencies and store them.
+- Find library, in pt-BR, to do the sentiment analysis, or find dictionary of sentiment polarization.
 -
