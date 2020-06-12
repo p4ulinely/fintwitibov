@@ -21,15 +21,16 @@ module.exports = {
     async getTweets(req, res){
         try {
 
-            let perfil = req.params.perfil || ""
+            let perfil = req.params.perfil || "twitter"
             let tweets = []
-
-            if (perfil.length < 1) perfil = "twitter"
 
             console.log(`requesting tweets de "${perfil}"...`)
 
             const requestTwitter = await client.get("statuses/user_timeline", {
                 screen_name: perfil,
+                include_entities: true,
+                count: 200,
+                // until: "2020-06-11"
             })
 
             for (let tweet of requestTwitter) {
@@ -39,10 +40,13 @@ module.exports = {
                 ])
             }
 
-            console.log("tweets coletados:", tweets.length)
+            console.log(" :: tweets coletados:", tweets.length)
 
             return res.json(tweets)
         } catch (err) {
+
+            console.error(err)
+
             return res.status(400).json({
                 msg: "ErrorCatch"
             })
@@ -52,7 +56,6 @@ module.exports = {
     async coletarFintwit(req, res){
         try {
 
-        
             let tweetsInseridos = 0
             let tweetsExistentes = 0
 
@@ -62,16 +65,18 @@ module.exports = {
 
                 const requestTwitter = await client.get("statuses/user_timeline", {
                     screen_name: perfil,
-                    count: 200
+                    include_entities: true,
+                    count: 200,
+                    // until: "2020-06-01"
                 })
 
-                console.log(`  :: ${requestTwitter.length} tweets coletados!`)
-                console.log(`verificando se tweets já existem...`)
+                console.log(` :: ${requestTwitter.length} tweets coletados!`)
+                console.log(`  : verificando se tweets já existem...`)
 
                 for (let tweet of requestTwitter) {
 
                     const tweetExiste = await Fintwit.find({
-                        tweet_id: tweet.id
+                        tweet_id: tweet.id,
                     })
 
                     if (tweetExiste.length == 0) {
@@ -98,6 +103,9 @@ module.exports = {
             })
 
         } catch (err) {
+
+            console.error(err)
+
             return res.status(400).json({
                 msg: "ErrorCatch"
             })
@@ -136,6 +144,9 @@ module.exports = {
             return res.json({ tweets })
 
         } catch (err) {
+
+            console.error(err)
+
             return res.status(400).json({
                 msg: "ErrorCatch"
             })
@@ -155,6 +166,9 @@ module.exports = {
             
             res.json({ freq })
         } catch (err) {
+
+            console.error(err)
+
             res.status(400).json({
                 msg: "ErrorCatch"
             })
