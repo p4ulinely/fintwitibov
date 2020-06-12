@@ -29,5 +29,5 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 - Endpoint to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
-- Find library, in pt-BR, to do the sentiment analysis, or find dictionary of sentiment polarization.
--
+- Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
+- Create live cloud of sentiments of last month, week and day.
