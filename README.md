@@ -27,6 +27,7 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
+- Endpoint to display a chart of Tweets Quantity VS IBOV Volatility.
 - Endpoint to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
