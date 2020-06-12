@@ -2,7 +2,7 @@
 
 This project has the purpose of find out a trustworthy approach to make a sentiment analysis on the brazilian fintwit community. A lot of stuff is done live from my YouTube channel.
 
-## Array of Twitter profiles
+## Array of Twitter Profiles
 
 ```javascript
 ["cafecomferri", "albuquerque_af", "hbredda", "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed", "MeninRibeiro"]
@@ -26,3 +26,7 @@ There are much more profiles to watch, but due to limitations on the data storin
 - Module to tokenize tweets, filtering stop-words/chars, urls, then generate js object with tokens and their respective frequencies.
 
 ## To Do
+
+- 
+-
+-
