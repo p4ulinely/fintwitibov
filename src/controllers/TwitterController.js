@@ -18,7 +18,8 @@ const client = new twitter({
 
 let perfisFintwit = ["cafecomferri", "albuquerque_af", "hbredda",
     "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed",
-    "MeninRibeiro", "ThiagoNigro", "helocruz"]
+    "MeninRibeiro", "ThiagoNigro", "helocruz", "FariaLimaElevat",
+    "sf2invest"]
 
 module.exports = {
     async mostraTweets(req, res){
@@ -73,8 +74,8 @@ module.exports = {
                     screen_name: perfil,
                     include_entities: true,
                     count: 200,
-                    result_type: "recent", // default: mixed
-                    // until: "2020-06-06"
+                    result_type: "mixed", // mixed (default), popular or recent
+                    // until: "2020-06-10"
                 })
 
                 console.log(` :: ${requestTwitter.length} tweets coletados!`)

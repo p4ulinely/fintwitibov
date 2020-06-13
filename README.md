@@ -5,7 +5,10 @@ This project has the purpose of find out a trustworthy approach to make a sentim
 ## Array of Twitter Profiles
 
 ```javascript
-"cafecomferri", "albuquerque_af", "hbredda", "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed", "MeninRibeiro", "ThiagoNigro", "helocruz"
+["cafecomferri", "albuquerque_af", "hbredda",
+    "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed",
+    "MeninRibeiro", "ThiagoNigro", "helocruz", "FariaLimaElevat",
+    "sf2invest"]
 ``` 
 
 There are much more profiles to watch, but due to limitations on the data storing, these are the monitored profiles so far.
@@ -22,8 +25,8 @@ There are much more profiles to watch, but due to limitations on the data storin
     - Get tweets from Twitter API. Store them on NoSQL DB.
     - Display stored tweets from either all profiles or a specific one.
     - Tokenize tweet into JSON, with their respective frequencies.
-    - Tweets intensity (grouped by date) to feed Webpage of Charts.
-
+    - Tweets (grouped by date).
+    - Tweets intensity concatenated with INDFUT volatility, to feed webpage of charts.
 - Module to tokenize tweets, filtering stop-words/chars, urls, then generate js object with tokens and their respective frequencies.
 - Get live source of either IBOV or INDFUT historical data.
 
