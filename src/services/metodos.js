@@ -1,29 +1,40 @@
+function novoCabecalho(headerAntigo) {
+
+    const novoHeader = ["data", "último", "abertura", "máxima", "mínima", "vol.", "var%"]
+        
+    for (let novo of novoHeader) {
+       if (headerAntigo.indexOf(novo) != -1) return novo
+    }    
+
+    return headerAntigo
+}
+
+
 // FROM https://gist.github.com/johannesjo/6b11ef072a0cb467cc93a885b5a1c19f 
 function tableToJson(table) {
-    var data = [];
+    let data = []
 
     // first row needs to be headers
-    var headers = [];
-    for (var i=0; i<table.rows[0].cells.length; i++) {
-        headers[i] = table.rows[0].cells[i].innerHTML.toLowerCase().replace(/ /gi,'');
+    let headers = []
+    for (let i=0; i<table.rows[0].cells.length; i++) {
+        let novoHeader = novoCabecalho(table.rows[0].cells[i].innerHTML.toLowerCase().replace(/ /gi,''))
+        headers[i] = novoHeader 
     }
 
     // go through cells
-    for (var i=1; i<table.rows.length; i++) {
+    for (let i=1; i<table.rows.length; i++) {
 
-        var tableRow = table.rows[i];
-        var rowData = {};
+        let tableRow = table.rows[i]
+        let rowData = {}
 
-        for (var j=0; j<tableRow.cells.length; j++) {
-
-            rowData[ headers[j] ] = tableRow.cells[j].innerHTML;
-
+        for (let j=0; j<tableRow.cells.length; j++) {
+            rowData[ headers[j] ] = tableRow.cells[j].innerHTML
         }
 
-        data.push(rowData);
+        data.push(rowData)
     }       
 
-    return data;
+    return data
 }
 
 exports.ttoj = tableToJson

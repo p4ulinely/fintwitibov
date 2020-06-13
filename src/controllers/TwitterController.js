@@ -219,30 +219,59 @@ module.exports = {
             
             console.log("coletando e agrupando tweets do BD...")
 
-            const qntTweetsPorDia = await Fintwit.aggregate([{
-                $group: {
-                    _id: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
-                    },
-                    intensidade: { $sum: 1 }
+            const intensTweetsPorDia = await Fintwit.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: { format: "%d.%m.%Y", date: "$created_at" }
+                        },
+                        intensidade: {
+                            $sum: 1
+                        }
+                    }
                 }
-            }])
-
+                // {
+                    // $sort: {
+                        // _id: -1
+                    // }
+                // }
+            ])
+            
             console.log("coletando dados historicos do INDFUT...")
 
             const resultadosINVESTING = await axios.get("https://br.investing.com/indices/ibovespa-futures-historical-data")
 
-            console.log("convertendo dados para DOM...")
+            console.log(" : convertendo dados para DOM...")
 
             const nomeTabelaComDados = "curr_table"
             const doc = new jsdom.JSDOM(resultadosINVESTING.data)    
-            const tabelaResultados = doc.window.document.querySelector(`#${nomeTabelaComDados}`)
+            let tabelaResultados = doc.window.document.querySelector(`#${nomeTabelaComDados}`)
 
-            console.log("convertendo tabela HTML para JSON...")
+            console.log(" : convertendo tabela HTML para JSON...")
 
-            const resultados = ttoj(tabelaResultados)
+            tabelaResultados = ttoj(tabelaResultados)
 
-            res.json(resultados)
+            console.log("concatenando resultados...")
+
+            for (let linha of tabelaResultados) {
+
+                console.log(" : convertendo para float...")
+
+                // converte para float
+                linha["último"] = parseFloat(linha["último"])*1000
+                linha["abertura"] = parseFloat(linha["abertura"])*1000
+                linha["máxima"] = parseFloat(linha["máxima"])*1000
+                linha["mínima"] = parseFloat(linha["mínima"])*1000
+                linha["max-min"] = linha["máxima"] - linha["mínima"]
+
+                console.log(" : coletando a intensidade do dia...");
+
+                // procura por intensidade de tweets
+                let arrIntensidade = await intensTweetsPorDia.filter(ele => ele._id == linha.data)[0]
+                linha.intensidade = arrIntensidade != undefined ? arrIntensidade.intensidade : -1
+            }
+
+            res.json(tabelaResultados)
         } catch (err) {
             console.error(err)
 
@@ -251,6 +280,5 @@ module.exports = {
             })
         }
     },
-
 
 }
