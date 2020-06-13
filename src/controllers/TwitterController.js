@@ -160,11 +160,11 @@ module.exports = {
     async calcularFrequencia(req, res) {
         try {
 
-            let frase = req.body.frase || ""
+            let frasePOST = req.body.frase || ""
             
             console.log("calculando frequencias...")
 
-            let freq = frase == "" ? "vazio" : atomizador.frequencia(frase)
+            let freq = frasePOST == "" ? "vazio" : atomizador.frequencia(frasePOST)
 
             console.log(` :: ${freq.length} frequencias calculadas para "${frase}"`)
             
