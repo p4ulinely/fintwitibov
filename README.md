@@ -22,12 +22,13 @@ There are much more profiles to watch, but due to limitations on the data storin
     - Get tweets from Twitter API. Store them on NoSQL DB.
     - Display stored tweets from either all profiles or a specific one.
     - Tokenize tweet into JSON, with their respective frequencies.
+    - Tweets intensity (grouped by date) to feed Webpage of Charts.
 
 - Module to tokenize tweets, filtering stop-words/chars, urls, then generate js object with tokens and their respective frequencies.
-- Endpoint of tweets intensity (grouped by date) to feed Webpage of Charts.
 
 ## To Do
 
+- `(doing)` Get live source of either IBOV or INDFUT historical data.
 - Websocket to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
