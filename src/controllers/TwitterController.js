@@ -159,7 +159,7 @@ module.exports = {
 
     async calcularFrequencia(req, res) {
         try {
-
+            
             let frasePOST = req.body.frase || ""
             
             console.log("calculando frequencias...")
@@ -178,6 +178,60 @@ module.exports = {
             })
         }
     },
+    
+    async tweetsPorData(req, res){
+        
+        try {
+         
+            console.log("coletando e agrupando tweets...")
+
+            const tweetsBD = await Fintwit.aggregate([{
+                $group: {
+                    _id : {
+                        $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
+                    },
+                    entry: {
+                        $push: {
+                            tweet_id: "$tweet_id",
+                            perfil: "$perfil",
+                            text: "$text",
+                            hashtags: "$hashtags"
+                        }
+                    }
+                }
+                
+            }])
+
+           res.json(tweetsBD)
+        } catch (err) {
+            console.error(err) 
+
+            res.status(400).json({
+                msg: "ErrorCatch"
+            })
+        }
+    },
+
+    async qntTweetsPorData(req, res) {
+        try {
+            
+            const qntTweetsPorDia = await Fintwit.aggregate([{
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
+                    },
+                    quantidade: { $sum: 1 }
+                }
+            }])
+
+            res.json(qntTweetsPorDia)
+        } catch (err) {
+            console.error(err)
+
+            res.status(400).json({
+                msg: "ErrorCatch"
+            })
+        }
+    },
 
 }
-

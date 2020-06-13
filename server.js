@@ -31,6 +31,8 @@ app.get('/perfil/:perfil?', TwitterController.mostraTweets)
 app.get('/coletar/:perfil?', TwitterController.coletarFintwit)
 app.get('/mostrar/:perfil?', TwitterController.mostrarFintwit)
 app.post('/freq', TwitterController.calcularFrequencia)
+app.get('/pordata/tweets', TwitterController.tweetsPorData)
+app.get('/pordata/qtweets', TwitterController.qntTweetsPorData)
 
 app.listen(port, () => {
     console.log(`On PORT ${port}!`)
