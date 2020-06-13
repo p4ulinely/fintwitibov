@@ -32,6 +32,9 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
+- Model to INDFUT historical data
+    - Route to display these data
+    - Mix these data - from DB, with the, already done, Tweets intensity.  
 - Websocket to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
