@@ -27,9 +27,9 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
-- Endpoint of frequencies to feed Websocket
-- Webpage to display a chart of Tweets intensity VS IBOV volatility.
+- Endpoint of tweets intensity (grouped by date) to feed Webpage of Charts.
 - Websocket to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
-- Create live cloud of sentiments of last month, week and day.
+- Create cloud of sentiments of last month, week and day VS IBOV volatility.
+- Webpage to display Charts of tweets intensity VS IBOV volatility.
