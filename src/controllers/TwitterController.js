@@ -3,6 +3,9 @@ const mongoose = require('mongoose')
 const Fintwit = mongoose.model('Fintwit')
 const atomizador = require('./../services/atomiza')
 require('dotenv-safe').config()
+const axios = require('axios')
+const jsdom = require('jsdom')
+const { ttoj } = require('./../services/metodos')
 
 const client = new twitter({
     subdomain: "api", // "api" is the default (change for other subdomains)
@@ -180,7 +183,6 @@ module.exports = {
     },
     
     async tweetsPorData(req, res){
-        
         try {
          
             console.log("coletando e agrupando tweets...")
@@ -212,19 +214,35 @@ module.exports = {
         }
     },
 
-    async qntTweetsPorData(req, res) {
+    async intensidadeTweetsPorData(req, res) {
         try {
             
+            console.log("coletando e agrupando tweets do BD...")
+
             const qntTweetsPorDia = await Fintwit.aggregate([{
                 $group: {
                     _id: {
                         $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
                     },
-                    quantidade: { $sum: 1 }
+                    intensidade: { $sum: 1 }
                 }
             }])
 
-            res.json(qntTweetsPorDia)
+            console.log("coletando dados historicos do INDFUT...")
+
+            const resultadosINVESTING = await axios.get("https://br.investing.com/indices/ibovespa-futures-historical-data")
+
+            console.log("convertendo dados para DOM...")
+
+            const nomeTabelaComDados = "curr_table"
+            const doc = new jsdom.JSDOM(resultadosINVESTING.data)    
+            const tabelaResultados = doc.window.document.querySelector(`#${nomeTabelaComDados}`)
+
+            console.log("convertendo tabela HTML para JSON...")
+
+            const resultados = ttoj(tabelaResultados)
+
+            res.json(resultados)
         } catch (err) {
             console.error(err)
 
@@ -233,5 +251,6 @@ module.exports = {
             })
         }
     },
+
 
 }

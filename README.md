@@ -25,10 +25,10 @@ There are much more profiles to watch, but due to limitations on the data storin
     - Tweets intensity (grouped by date) to feed Webpage of Charts.
 
 - Module to tokenize tweets, filtering stop-words/chars, urls, then generate js object with tokens and their respective frequencies.
+- Get live source of either IBOV or INDFUT historical data.
 
 ## To Do
 
-- `(doing)` Get live source of either IBOV or INDFUT historical data.
 - Websocket to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
