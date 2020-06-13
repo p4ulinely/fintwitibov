@@ -38,7 +38,7 @@ const listaMaisFrequentes = str => {
 // metodo para atomizar frases em palavras e suas respectivas frequencias
 const atomizar = frase => {
 
-    const proibidos = [';', ',', '.', ':', '(', ')', '{', '}', '[', ']']
+    const proibidos = [';', ',', '.', ':', '(', ')', '{', '}', '[', ']', '…', '!', '?']
     let palavrasComFrequencias = []
     
     frase = frase.split(' ')

@@ -16,7 +16,7 @@ const client = new twitter({
     access_token_secret: process.env.ACCESS_TOKEN_SECRET
 })
 
-let perfisFintwit = ["cafecomferri", "albuquerque_af", "hbredda",
+const perfisFintwit = ["cafecomferri", "albuquerque_af", "hbredda",
     "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed",
     "MeninRibeiro", "ThiagoNigro", "helocruz", "FariaLimaElevat",
     "sf2invest"]
@@ -186,12 +186,12 @@ module.exports = {
     async tweetsPorData(req, res){
         try {
          
-            console.log("coletando e agrupando tweets...")
+            console.log("coletando e agrupando tweets do BD...")
 
             const tweetsBD = await Fintwit.aggregate([{
                 $group: {
                     _id : {
-                        $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
+                        $dateToString: { format: "%d.%m.%Y", date: "$created_at" }
                     },
                     entry: {
                         $push: {
@@ -257,18 +257,23 @@ module.exports = {
             for (let linha of tabelaResultados) {
 
                 console.log(" : convertendo para float...")
+        
+                const fator = 1000
 
                 // converte para float
-                linha["último"] = parseFloat(linha["último"])*1000
-                linha["abertura"] = parseFloat(linha["abertura"])*1000
-                linha["máxima"] = parseFloat(linha["máxima"])*1000
-                linha["mínima"] = parseFloat(linha["mínima"])*1000
+                linha["último"] = parseFloat(linha["último"])*fator
+                linha["abertura"] = parseFloat(linha["abertura"])*fator
+                linha["máxima"] = parseFloat(linha["máxima"])*fator
+                linha["mínima"] = parseFloat(linha["mínima"])*fator
                 linha["max-min"] = linha["máxima"] - linha["mínima"]
 
-                console.log(" : coletando a intensidade do dia...");
+                console.log(" : coletando a intensidade do dia...")
 
                 // procura por intensidade de tweets
-                let arrIntensidade = await intensTweetsPorDia.filter(ele => ele._id == linha.data)[0]
+                let arrIntensidade = await intensTweetsPorDia.filter(
+                    ele => ele._id == linha.data
+                )[0]
+
                 linha.intensidade = arrIntensidade != undefined ? arrIntensidade.intensidade : -1
             }
 
