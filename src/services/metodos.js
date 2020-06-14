@@ -1,9 +1,22 @@
 function novoCabecalho(headerAntigo) {
 
-    const novoHeader = ["data", "último", "abertura", "máxima", "mínima", "vol.", "var%"]
+    const novoHeader = {
+        "data": "data",
+        "último": "ultimo",
+        "abertura": "abertura",
+        "máxima": "maxima",
+        "mínima": "minima",
+        "vol.": "volume",
+        "var%": "variacao" 
+    }
         
-    for (let novo of novoHeader) {
-       if (headerAntigo.indexOf(novo) != -1) return novo
+    // Object.keys(novoHeader).forEach(item => {
+// 
+       // if (headerAntigo.indexOf(item) != -1) return novoHeader[item]
+    // })
+
+    for (let novo of Object.keys(novoHeader)) {
+       if (headerAntigo.indexOf(novo) != -1) return novoHeader[novo]
     }    
 
     return headerAntigo

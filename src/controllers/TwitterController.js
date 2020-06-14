@@ -1,6 +1,7 @@
 const twitter = require('twitter-lite')
 const mongoose = require('mongoose')
 const Fintwit = mongoose.model('Fintwit')
+const Indfut = mongoose.model('Indfut')
 const atomizador = require('./../services/atomiza')
 require('dotenv-safe').config()
 const axios = require('axios')
@@ -191,7 +192,7 @@ module.exports = {
             const tweetsBD = await Fintwit.aggregate([{
                 $group: {
                     _id : {
-                        $dateToString: { format: "%d.%m.%Y", date: "$created_at" }
+                        $dateToString: { format: "%d-%m-%Y", date: "$created_at" }
                     },
                     entry: {
                         $push: {
@@ -220,14 +221,39 @@ module.exports = {
             
             console.log("coletando e agrupando tweets do BD...")
 
-            const intensTweetsPorDia = await Fintwit.aggregate([
+            // consulta para retornar quantidade de tweets por dia
+            const tweetsPorDiaFINTWIT = await Fintwit.aggregate([
                 {
                     $group: {
                         _id: {
-                            $dateToString: { format: "%d.%m.%Y", date: "$created_at" }
+                            $dateToString: { format: "%d-%m-%Y", date: "$created_at" }
                         },
                         intensidade: {
                             $sum: 1
+                        }
+                    }
+                }
+            ])
+
+            console.log("coletando dados do INDFUT do BD...")
+
+            // consulta para retornar dados historicos no mesmo formato da consulta anterior
+            const dadosINDFUT = await Indfut.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: { format: "%d-%m-%Y", date: "$data" }
+                        },
+                        entry: {
+                            $push: {
+                                ultimo: "$ultimo",
+                                abertura: "$abertura",
+                                maxima: "$maxima",
+                                minima: "$minima",
+                                volume: "$volume",
+                                variacao: "$variacao",
+                                max_min: "$max_min"
+                            }
                         }
                     }
                 }
@@ -237,47 +263,20 @@ module.exports = {
                     // }
                 // }
             ])
-            
-            console.log("coletando dados historicos do INDFUT...")
-
-            const resultadosINVESTING = await axios.get("https://br.investing.com/indices/ibovespa-futures-historical-data")
-
-            console.log(" : convertendo dados para DOM...")
-
-            const nomeTabelaComDados = "curr_table"
-            const doc = new jsdom.JSDOM(resultadosINVESTING.data)    
-            let tabelaResultados = doc.window.document.querySelector(`#${nomeTabelaComDados}`)
-
-            console.log(" : convertendo tabela HTML para JSON...")
-
-            tabelaResultados = ttoj(tabelaResultados)
 
             console.log("concatenando resultados...")
 
-            for (let linha of tabelaResultados) {
-
-                console.log(" : convertendo para float...")
-        
-                const fator = 1000
-
-                // converte para float
-                linha["último"] = parseFloat(linha["último"])*fator
-                linha["abertura"] = parseFloat(linha["abertura"])*fator
-                linha["máxima"] = parseFloat(linha["máxima"])*fator
-                linha["mínima"] = parseFloat(linha["mínima"])*fator
-                linha["max-min"] = linha["máxima"] - linha["mínima"]
-
-                console.log(" : coletando a intensidade do dia...")
+            for (let linha of dadosINDFUT) {
 
                 // procura por intensidade de tweets
-                let arrIntensidade = await intensTweetsPorDia.filter(
-                    ele => ele._id == linha.data
+                let arrIntensidade = await tweetsPorDiaFINTWIT.filter(
+                    ele => ele._id == linha._id
                 )[0]
 
-                linha.intensidade = arrIntensidade != undefined ? arrIntensidade.intensidade : -1
+                linha.entry[0].intensidade = arrIntensidade != undefined ? arrIntensidade.intensidade : -1
             }
 
-            res.json(tabelaResultados)
+            res.json(dadosINDFUT)
         } catch (err) {
             console.error(err)
 
