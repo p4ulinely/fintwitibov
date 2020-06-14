@@ -35,6 +35,7 @@ app.post('/tweets/freq', TwitterController.calcularFrequencia)
 app.get('/tweets/pordata/tweets', TwitterController.tweetsPorData)
 app.get('/tweets/pordata/itweets', TwitterController.intensidadeTweetsPorData)
 app.get('/indfut/coletar', IndfutController.coletarDadosHistoricos)
+app.get('/indfut/mostrar/:data?', IndfutController.mostrarDadosHistoricos)
 
 app.listen(port, () => {
     console.log(`On PORT ${port}!`)

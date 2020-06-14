@@ -5,10 +5,9 @@ This project has the purpose of find out a trustworthy approach to make a sentim
 ## Array of Twitter Profiles
 
 ```javascript
-["cafecomferri", "albuquerque_af", "hbredda",
-    "fernandocluiz", "josuenunes", "PabloSpyer", "quantzed",
-    "MeninRibeiro", "ThiagoNigro", "helocruz", "FariaLimaElevat",
-    "sf2invest"]
+["cafecomferri", "albuquerque_af", "hbredda", "fernandocluiz",
+    "josuenunes", "PabloSpyer", "quantzed", "MeninRibeiro",
+    "ThiagoNigro", "helocruz", "FariaLimaElevat", "sf2invest"]
 ``` 
 
 There are much more profiles to watch, but due to limitations on the data storing, these are the monitored profiles so far.

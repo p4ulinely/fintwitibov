@@ -14,7 +14,7 @@ module.exports = {
     async coletarDadosHistoricos(req, res) {
         try {
 
-            console.log("coletando dados historicos do INDFUT...")
+            console.log("coletando dados historicos do INDFUT, no Investing...")
 
             const resultadosINVESTING = await axios.get("https://br.investing.com/indices/ibovespa-futures-historical-data")
 
@@ -75,4 +75,26 @@ module.exports = {
         }
 
     },
+
+    async mostrarDadosHistoricos(req, res) {
+        try {
+           
+            // MM(M)-DD(D)-AA(AAAA)
+            let { data } = req.params
+            data = data ? new Date(data) : "" 
+
+            console.log("coletando dados historicos do BD...");
+
+            const dadosHistoricos = data ? await Indfut.find({ data }) : await Indfut.find({}).sort({ data: -1 })
+
+            res.json(dadosHistoricos)
+        } catch (err) {
+            console.error(err)
+
+            res.status(400).json({
+                msg: "ErrorCatch"
+            })
+        }
+    },
+
 }
