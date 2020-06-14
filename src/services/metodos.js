@@ -9,11 +9,6 @@ function novoCabecalho(headerAntigo) {
         "vol.": "volume",
         "var%": "variacao" 
     }
-        
-    // Object.keys(novoHeader).forEach(item => {
-// 
-       // if (headerAntigo.indexOf(item) != -1) return novoHeader[item]
-    // })
 
     for (let novo of Object.keys(novoHeader)) {
        if (headerAntigo.indexOf(novo) != -1) return novoHeader[novo]

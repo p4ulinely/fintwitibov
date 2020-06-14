@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Indfut = mongoose.model('Indfut')
+const Fintwit = mongoose.model('Fintwit')
 const axios = require('axios')
 const jsdom = require('jsdom')
 const { ttoj } = require('./../services/metodos')
@@ -88,6 +89,76 @@ module.exports = {
             const dadosHistoricos = data ? await Indfut.find({ data }) : await Indfut.find({}).sort({ data: -1 })
 
             res.json(dadosHistoricos)
+        } catch (err) {
+            console.error(err)
+
+            res.status(400).json({
+                msg: "ErrorCatch"
+            })
+        }
+    },
+
+    async mostrarDadosHistoricosMaisIntensidadesTweets(req, res){
+        try {
+
+            console.log("coletando e agrupando tweets do BD...")
+
+            // consulta para retornar quantidade de tweets por dia
+            const tweetsPorDiaFINTWIT = await Fintwit.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: { format: "%d-%m-%Y", date: "$created_at" }
+                        },
+                        intensidade: {
+                            $sum: 1
+                        }
+                    }
+                }
+            ])
+
+            console.log("coletando dados do INDFUT do BD...")
+
+            // consulta para retornar dados historicos no mesmo formato da consulta anterior
+            const dadosINDFUT = await Indfut.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: { format: "%d-%m-%Y", date: "$data" }
+                        },
+                        entry: {
+                            $push: {
+                                ultimo: "$ultimo",
+                                abertura: "$abertura",
+                                maxima: "$maxima",
+                                minima: "$minima",
+                                volume: "$volume",
+                                variacao: "$variacao",
+                                max_min: "$max_min"
+                            }
+                        }
+                    }
+                }
+                // {
+                    // $sort: {
+                        // _id: -1
+                    // }
+                // }
+            ])
+
+            console.log("concatenando resultados...")
+
+            for (let linha of dadosINDFUT) {
+
+                // procura por intensidade de tweets
+                let arrIntensidade = await tweetsPorDiaFINTWIT.filter(
+                    ele => ele._id == linha._id
+                )[0]
+
+                linha.entry[0].intensidade = arrIntensidade != undefined ? arrIntensidade.intensidade : -1
+            }
+
+            res.json(dadosINDFUT)
         } catch (err) {
             console.error(err)
 

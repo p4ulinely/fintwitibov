@@ -23,19 +23,9 @@ mongoose.set('useUnifiedTopology', true)
 // //////////////////////////////////////////// models
 requireDir('./src/models')
 
-// //////////////////////////////////////////// controllets
-const TwitterController = require('./src/controllers/TwitterController')
-const IndfutController = require('./src/controllers/IndfutController')
-
 // //////////////////////////////////////////// rotas 
-app.get('/tweets/perfil/:perfil?', TwitterController.mostraTweets)
-app.get('/tweets/coletar/:perfil?', TwitterController.coletarFintwit)
-app.get('/tweets/mostrar/:perfil?', TwitterController.mostrarFintwit)
-app.post('/tweets/freq', TwitterController.calcularFrequencia)
-app.get('/tweets/pordata/tweets', TwitterController.tweetsPorData)
-app.get('/tweets/pordata/itweets', TwitterController.intensidadeTweetsPorData)
-app.get('/indfut/coletar', IndfutController.coletarDadosHistoricos)
-app.get('/indfut/mostrar/:data?', IndfutController.mostrarDadosHistoricos)
+app.use('/indfut', require('./src/routes/indfut'));
+app.use('/tweets', require('./src/routes/tweets'));
 
 app.listen(port, () => {
     console.log(`On PORT ${port}!`)

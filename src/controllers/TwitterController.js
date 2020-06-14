@@ -22,7 +22,7 @@ const perfisFintwit = ["cafecomferri", "albuquerque_af", "hbredda", "fernandoclu
     "ThiagoNigro", "helocruz", "FariaLimaElevat", "sf2invest"]
 
 module.exports = {
-    async mostraTweets(req, res){
+    async getTweets(req, res){
         try {
 
             let perfil = req.params.perfil || "twitter"
@@ -233,49 +233,8 @@ module.exports = {
                     }
                 }
             ])
-
-            console.log("coletando dados do INDFUT do BD...")
-
-            // consulta para retornar dados historicos no mesmo formato da consulta anterior
-            const dadosINDFUT = await Indfut.aggregate([
-                {
-                    $group: {
-                        _id: {
-                            $dateToString: { format: "%d-%m-%Y", date: "$data" }
-                        },
-                        entry: {
-                            $push: {
-                                ultimo: "$ultimo",
-                                abertura: "$abertura",
-                                maxima: "$maxima",
-                                minima: "$minima",
-                                volume: "$volume",
-                                variacao: "$variacao",
-                                max_min: "$max_min"
-                            }
-                        }
-                    }
-                }
-                // {
-                    // $sort: {
-                        // _id: -1
-                    // }
-                // }
-            ])
-
-            console.log("concatenando resultados...")
-
-            for (let linha of dadosINDFUT) {
-
-                // procura por intensidade de tweets
-                let arrIntensidade = await tweetsPorDiaFINTWIT.filter(
-                    ele => ele._id == linha._id
-                )[0]
-
-                linha.entry[0].intensidade = arrIntensidade != undefined ? arrIntensidade.intensidade : -1
-            }
-
-            res.json(dadosINDFUT)
+            
+            res.json(tweetsPorDiaFINTWIT)
         } catch (err) {
             console.error(err)
 
