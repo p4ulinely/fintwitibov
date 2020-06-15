@@ -1,12 +1,20 @@
-// const fs = require('fs')
+const fs = require('fs')
 
-// let arr = []
+const ler = () => {
+    let arr = []
+    // let num =
+    let end = "./synsets_polarizados_ontopt06.txt"
+    const data = fs.readFileSync(end, {encoding:'utf8', flag:'r'});
 
-// fs.readFile('file.txt', (err, data) => {
-//     if (err) throw err
-//     arr = listaMaisFrequentes(data.toString())
-//     console.log(arr) //resultado final: um array de objetos com o token e sua frequencia
-// })
+    let lido = data.toString().split('\n')
+    console.log(lido.length);
+    // for(let linha of lido){
+
+        // arr.push(linha.split(':'))
+    // }
+
+    // return arr
+}
 
 // metodo que retorna frase como objeto de palavras e suas respectivas frequencias
 const listaMaisFrequentes = str => {
@@ -48,6 +56,7 @@ const atomizar = frase => {
         palavra = frase[i].toLowerCase()
         
         if(eUmaURL(palavra)) continue // elimina urls
+        if(palavra.indexOf('@') != -1) continue // elimina perfil
 
         // elimina caracteres proibidos
         let charsFiltrados = palavra.split('').filter(char => ( 
@@ -70,5 +79,5 @@ const eUmaURL = str => {
 }
 
 exports.frequencia = listaMaisFrequentes
-// module.exports = listaMaisFrequentes
-// exports.tokenize = atomizar
+exports.tokenize = atomizar
+exports.ler = ler

@@ -15,8 +15,8 @@ There are much more profiles to watch, but due to limitations on the data storin
 ## Stack
 
 - Main Layer
-    - Node Express
-    - NoSQL MongoDB
+    - Node (Express)
+    - NoSQL (MongoDB)
 
 ## Done
 
@@ -31,11 +31,12 @@ There are much more profiles to watch, but due to limitations on the data storin
 - Model to INDFUT historical data
     - Route to display these data
     - Mix these data - from DB, with the, already done, Tweets intensity.  
+- Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
 
 ## To Do
 
+- Integrate sentiment library to the project.
 - Websocket to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
-- Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
 - Create cloud of sentiments of last month, week and day VS IBOV volatility.
 - Webpage to display Charts of tweets intensity VS IBOV volatility.

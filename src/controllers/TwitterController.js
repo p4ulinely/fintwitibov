@@ -164,13 +164,13 @@ module.exports = {
     async calcularFrequencia(req, res) {
         try {
             
-            let frasePOST = req.body.frase || ""
-            
+            let frasePOST = req.params.frase || ""
+                frasePOST = "Estamos passando no curso um melhor entendimento do mercado aos iniciantes (e nao tao inciantes assim tb), para que… https://t.co/ERqUZ7ygsU" 
             console.log("calculando frequencias...")
 
             let freq = frasePOST == "" ? "vazio" : atomizador.frequencia(frasePOST)
 
-            console.log(` :: ${freq.length} frequencias calculadas para "${frase}"`)
+            console.log(` :: ${freq.length} frequencias calculadas para "${frasePOST}"`)
             
             res.json({ freq })
         } catch (err) {
@@ -235,6 +235,45 @@ module.exports = {
             ])
             
             res.json(tweetsPorDiaFINTWIT)
+        } catch (err) {
+            console.error(err)
+
+            res.status(400).json({
+                msg: "ErrorCatch"
+            })
+        }
+    },
+
+    async sentimentoDoDia(req, res){
+
+        try {
+          
+            console.log("coletando e agrupando tweets do BD...")
+
+            const tweetsBD = await Fintwit.aggregate([{
+                $group: {
+                    _id : {
+                        $dateToString: { format: "%d-%m-%Y", date: "$created_at" }
+                    },
+                    entry: {
+                        $push: {
+                            text: "$text"
+                        }
+                    }
+                }
+                
+            }])
+
+            for (let tweet of tweetsBD) {
+                // console.log(tweet);
+                // break
+                console.log(tweet.entry[0].text);
+                let freq = atomizador.tokenize(tweet.entry[0].text)
+                console.log(freq);
+                break;
+            }
+
+           res.json({msg: "ok"})
         } catch (err) {
             console.error(err)
 
