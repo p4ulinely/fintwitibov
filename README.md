@@ -33,7 +33,10 @@ There are much more profiles to watch, but due to limitations on the data storin
     - Mix these data - from DB, with the, already done, Tweets intensity.  
 - Find library, in pt-BR, to do the sentiment analysis, or find a dictionary with sentiment polarization.
     - Get lib into array.
-- List of Stop-words, in pt-BR, to add pre-processing step.
+- List of Stop-words, in pt-BR, to add to the pre-processing step.
+- Initial module to manage the NLP
+    - Method to convert lib Onto-PT into object.
+    - Method to return the word polarizations.  
 
 ## To Do
 

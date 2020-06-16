@@ -4,3 +4,4 @@ node_modules
 key.txt
 Polaridades_OntoPT
 src/services/synsets_polarizados_ontopt06.txt
+lib-resumida_onto-pt.json

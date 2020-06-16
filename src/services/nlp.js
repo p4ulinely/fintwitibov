@@ -1,25 +1,79 @@
 const fs = require('fs')
 const sw = require('./stop_words_pt')
 
-const carregaLibOntoPt = () => {
+const converteOntoPTEmObjeto = () => {
 
-    let lib = []
-
-    let endereco = "/Users/paulinelymorgan/git/fintwit/src/services/synsets_polarizados_ontopt06.txt"
-    // endereco = "/Users/paulinelymorgan/git/fintwit/src/services/ex_lib.txt"
+    // let endereco = "/Users/paulinelymorgan/git/fintwit/src/services/synsets_polarizados_ontopt06.txt"
+    endereco = './ex_lib.txt'
     const data = fs.readFileSync(endereco, {encoding:'utf8', flag:'r'})
+    let arquivoLido = data.toString().split('\n')
+    arquivoLido.pop()
+    
+    let lib = {
+       "-1": [],
+       "0": [],
+       "1": []
+    }
 
-    let lido = data.toString().split('\n')
-    lido.pop()
+    for(let i of arquivoLido){
+        let linha = i.split(':')
+        let pol = linha[0].replace(/\s/g, '') 
+        let lexemas = linha[2].replace(/(\[|\]|\s)/g,'')
 
-    for(let linha of lido){
-        let pol = parseInt(linha.split(':')[0]) 
-        let lexemas = linha.split(':')[2].replace(/(\[|\]|\s)/g,'')
-
-        lib.push([pol, lexemas.split(',')])
+        for (let key of Object.keys(lib)) {
+            if (pol == key) {
+                for (let lexema of lexemas.split(','))
+                    lib[key].push(lexema)
+                break
+            } 
+        }
     }
 
     return lib
+}
+
+const escreveArquivoJson = (obj, nome) => {
+    try {
+        fs.writeFileSync(`./${nome}.json`, JSON.stringify(obj) , 'utf-8') 
+    } catch(err){
+        console.error(err)
+    }
+} 
+
+const lerArquivoJson = arquivo => {
+    try {
+
+        const data = fs.readFileSync(`./${arquivo}`, {encoding:'utf8', flag:'r'})
+
+        return JSON.parse(data)
+    } catch (err) {
+        console.error(err)
+    }
+} 
+
+const criaLibOntoPTEmArquivoJson = () => {
+    const nomeArquivo = "lib-resumida_onto-pt" 
+    
+    escreveArquivoJson(converteOntoPTEmObjeto(), nomeArquivo)    
+}
+
+const carregaOntoPT = () => {
+    return lerArquivoJson(`lib-resumida_onto-pt.json`)
+}
+
+const sentimentoDaPalavra = (lib, palavra) => {
+
+    let neg = lib["-1"].indexOf(palavra)
+    let neu = lib["0"].indexOf(palavra)
+    let pos = lib["1"].indexOf(palavra)
+
+    sentimento = []
+
+    if(neg != -1) sentimento.push("neg")
+    if(neu != -1) sentimento.push("neu")
+    if(pos != -1) sentimento.push("pos")
+
+    return sentimento
 }
 
 // metodo que retorna frase como objeto de palavras e suas respectivas frequencias
@@ -84,6 +138,9 @@ const eUmaURL = str => {
     return str.match(eRegular) ? true : false
 }
 
+// criaLibOntoPTEmArquivoJson() // descomentar apenas para regerar lib em json
+
 exports.frequencias = geraListaDeFrequenciasDasPalavras
 exports.atomizador = atomizador
-exports.ontopt = carregaLibOntoPt
+exports.ontopt = carregaOntoPT
+exports.sentimento = sentimentoDaPalavra
