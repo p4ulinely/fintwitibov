@@ -20,7 +20,7 @@ const converteOntoPTEmObjeto = () => {
         let pol = linha[0].replace(/\s/g, '') 
         let lexemas = linha[2].replace(/(\[|\]|\s)/g,'')
 
-        for (let key of Object.keys(lib)) {
+        for(let key of Object.keys(lib)){
             if (pol == key) {
                 for (let lexema of lexemas.split(','))
                     lib[key].push(lexema)
@@ -61,43 +61,87 @@ const carregaOntoPT = () => {
     return lerArquivoJson(`lib-resumida_onto-pt.json`)
 }
 
+// retorna sentimento da palavra passada, de acordo com a lib passada
 const sentimentoDaPalavra = (lib, palavra) => {
 
     let neg = lib["-1"].indexOf(palavra)
     let neu = lib["0"].indexOf(palavra)
     let pos = lib["1"].indexOf(palavra)
 
-    sentimento = []
+    sentimento = null
 
-    if(neg != -1) sentimento.push("neg")
-    if(neu != -1) sentimento.push("neu")
-    if(pos != -1) sentimento.push("pos")
+    if(neg != -1 || neu != -1 || pos != -1){
+        sentimento = 0
 
+        if(neg != -1) sentimento += -1
+        if(pos != -1) sentimento += 1
+    }
+    
     return sentimento
 }
 
-// metodo que retorna frase como objeto de palavras e suas respectivas frequencias
-const geraListaDeFrequenciasDasPalavras = str => {
+// retorna sentimento da frase passada
+// (valor < 0: negativo, valor > 0: positivo, 0: neutro)
+const sentimentoDaFrase = frase => {
+
+    const lib = carregaOntoPT()
+    const listaFrequencias = geraListaDeFrequenciasDasPalavras(frase)
+
+    // console.log(listaFrequencias)
+   
+    // atribui sentimento a palavra, caso ela seja valida
+    for(let key of Object.keys(listaFrequencias)){
+        let s = sentimentoDaPalavra(lib, key)
+
+        if(s != null){
+
+            // multiplica a quantidade pelo sentimento
+            let soma = s * listaFrequencias[key] 
+
+            // substitui a quantidade pelo sentimento final da palavra
+            listaFrequencias[key] = soma
+        } else {
+            listaFrequencias[key] = s 
+        } 
+    }
+
+    let sentimentoFinal = 0
+    let controle = false
+
+    for(let key of Object.keys(listaFrequencias)){
+
+        if(listaFrequencias[key] != null){
+            controle = true
+            sentimentoFinal += listaFrequencias[key]
+        } 
+    }
+
+    console.log(listaFrequencias)
+
+    return controle ? sentimentoFinal : null
+}
+
+// metodo que retorna frase como objeto de palavrasatomização e suas respectivas frequencias
+const geraListaDeFrequenciasDasPalavras = frase => {
 
     const listaTokens = []
-    const tokensUnicos = new Set()
-    const tokensUnicosFrequencia = []
-    let linhas = str.split('\n')
+    const listaTokensUnicos = new Set()
+    const tokensUnicosFrequencia = {}
+    let linhas = frase.split('\n')
 
     for(let linha of linhas){
         let tokens = atomizador(linha)
-        tokens.forEach(t => {
+
+        for(let t of tokens){
             listaTokens.push(t)
-            tokensUnicos.add(t)
-        })
+            listaTokensUnicos.add(t)   
+        }
     }
 
-    for(let token of tokensUnicos){
+    for(let token of listaTokensUnicos){
         let qnt = listaTokens.filter(t => t == token).length
-        tokensUnicosFrequencia.push({
-            't': token,
-            'f': qnt
-        })
+
+        tokensUnicosFrequencia[token] = qnt
     }
 
     return tokensUnicosFrequencia
@@ -143,4 +187,5 @@ const eUmaURL = str => {
 exports.frequencias = geraListaDeFrequenciasDasPalavras
 exports.atomizador = atomizador
 exports.ontopt = carregaOntoPT
-exports.sentimento = sentimentoDaPalavra
+exports.sentipa = sentimentoDaPalavra
+exports.sentifr = sentimentoDaFrase
