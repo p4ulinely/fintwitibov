@@ -37,6 +37,7 @@ There are much more profiles to watch, but due to limitations on the data storin
 - Initial module to manage the NLP
     - Method to convert lib Onto-PT into object.
     - Method to return the word polarizations.  
+    - Method to return the polarization of an entire phrase/tweet.
 
 ## To Do
 
