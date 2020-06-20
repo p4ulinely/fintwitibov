@@ -2,6 +2,7 @@ const twitter = require('twitter-lite')
 const mongoose = require('mongoose')
 const Fintwit = mongoose.model('Fintwit')
 const Indfut = mongoose.model('Indfut')
+const SentimentosPalavras = mongoose.model('SentimentosPalavras')
 const nlp = require('./../services/nlp')
 require('dotenv-safe').config()
 const axios = require('axios')
@@ -257,7 +258,7 @@ module.exports = {
         }
     },
 
-    async sentimentoSeteDia(req, res){
+    async geraSentimentosSeteDia(req, res){
         try {
           
             console.log("coletando e agrupando tweets do BD...")
@@ -287,25 +288,40 @@ module.exports = {
                 }
             ])
 
-            console.log("calculando sentimentos dos 7 dias...")
+            console.log("calculando tokens e sentimentos dos 7 dias...")
 
             let sentimentos = {}
 
             for (let dia of tweetsBD) {
 
+                let sentimentoParaODia = 0
+                let tokensParaODia = new Set()
+
                 console.log(` :: dia ${dia._id} | ${dia.entry.length} tweets para calcular...`)
 
-                let sentimentoParaODia = 0
-
                 for (let tweet of dia.entry) {
-                    let senti = nlp.sentifr(tweet.text)
-                    sentimentoParaODia += senti != null ? senti : 0 
+                    
+                    // apenas para salvar os tokens do dia
+                    let tokens = nlp.atomizador(tweet.text)
+                    for (let t of tokens) tokensParaODia.add(t)
+
+                    // calcula sentimento para frase
+                    let sentiDaFrase = nlp.sentifr(tweet.text)
+                    sentimentoParaODia += sentiDaFrase != null ? sentiDaFrase : 0 
                 }
 
-                sentimentos[dia._id] = sentimentoParaODia
+                console.log("  : Salvando no BD...")
+
+                await SentimentosPalavras.create({
+                    data: new Date(dia._id),
+                    sentimento: sentimentoParaODia,
+                    palavras: Array.from(tokensParaODia)
+                })
+
+                console.log(`  : ${dia._id} salvo!`)
             }
 
-           res.json(sentimentos)
+           res.json({"msg": "sucesso"})
         } catch (err) {
             console.error(err)
 

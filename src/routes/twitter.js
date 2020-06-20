@@ -8,6 +8,6 @@ router.get('/mostrar/:perfil?', TwitterController.mostrarFintwit)
 router.get('/freq/:frase?', TwitterController.calcularFrequencia)
 router.get('/pordata/tweets', TwitterController.tweetsPorData)
 router.get('/pordata/itweets', TwitterController.intensidadeTweetsPorData)
-router.get('/pordata/senti', TwitterController.sentimentoDoDia)
+router.get('/senti7', TwitterController.geraSentimentosSeteDia)
 
 module.exports = router

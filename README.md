@@ -38,11 +38,10 @@ There are much more profiles to watch, but due to limitations on the data storin
     - Method to convert lib Onto-PT into object.
     - Method to return the word polarizations.  
     - Method to return the polarization of an entire phrase/tweet.
-    - Endpoint to return sentiment of the day
+    - Endpoint to return sentiment of the day and its tokens.
 
 ## To Do
 
-- `(doing)` Integrate sentiment library to the project.
 - Websocket to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Create cloud of sentiments of last month, week and day VS IBOV volatility.
