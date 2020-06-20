@@ -108,7 +108,7 @@ module.exports = {
                 {
                     $group: {
                         _id: {
-                            $dateToString: { format: "%d-%m-%Y", date: "$created_at" }
+                            $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
                         },
                         intensidade: {
                             $sum: 1
@@ -124,7 +124,7 @@ module.exports = {
                 {
                     $group: {
                         _id: {
-                            $dateToString: { format: "%d-%m-%Y", date: "$data" }
+                            $dateToString: { format: "%Y-%m-%d", date: "$data" }
                         },
                         entry: {
                             $push: {
@@ -138,12 +138,12 @@ module.exports = {
                             }
                         }
                     }
+                },
+                {
+                    $sort: {
+                        _id: -1
+                    }
                 }
-                // {
-                    // $sort: {
-                        // _id: -1
-                    // }
-                // }
             ])
 
             console.log("concatenando resultados...")
