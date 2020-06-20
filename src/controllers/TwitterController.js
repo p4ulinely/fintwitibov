@@ -2,7 +2,7 @@ const twitter = require('twitter-lite')
 const mongoose = require('mongoose')
 const Fintwit = mongoose.model('Fintwit')
 const Indfut = mongoose.model('Indfut')
-const nlp = require('./../services/nlp.js')
+const nlp = require('./../services/nlp')
 require('dotenv-safe').config()
 const axios = require('axios')
 const jsdom = require('jsdom')
@@ -188,22 +188,30 @@ module.exports = {
          
             console.log("coletando e agrupando tweets do BD...")
 
-            const tweetsBD = await Fintwit.aggregate([{
-                $group: {
-                    _id : {
-                        $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
-                    },
-                    entry: {
-                        $push: {
-                            tweet_id: "$tweet_id",
-                            perfil: "$perfil",
-                            text: "$text",
-                            hashtags: "$hashtags"
+            const tweetsBD = await Fintwit.aggregate([
+                {
+                    $group: {
+                        _id : {
+                            $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
+                        },
+                        entry: {
+                            $push: {
+                                tweet_id: "$tweet_id",
+                                perfil: "$perfil",
+                                text: "$text",
+                                hashtags: "$hashtags"
+                            }
                         }
                     }
+                    
+                },
+                {
+                    $sort: {
+                        _id: -1
+                    }
                 }
-                
-            }])
+
+            ])
 
            res.json(tweetsBD)
         } catch (err) {
@@ -249,12 +257,17 @@ module.exports = {
         }
     },
 
-    async sentimentoDoDia(req, res){
+    async sentimentoSeteDia(req, res){
         try {
           
             console.log("coletando e agrupando tweets do BD...")
 
             const tweetsBD = await Fintwit.aggregate([
+                {
+                    $match: {
+                        'created_at': {'$gte': new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)))}
+                    }
+                },
                 {
                     $group: {
                         _id : {
@@ -274,14 +287,25 @@ module.exports = {
                 }
             ])
 
-            for (let tweet of tweetsBD) {
-                console.log(tweet.entry[0].text);
-                let freq = nlp.atomizador(tweet.entry[0].text)
-                console.log(freq);
-                break
+            console.log("calculando sentimentos dos 7 dias...")
+
+            let sentimentos = {}
+
+            for (let dia of tweetsBD) {
+
+                console.log(` :: dia ${dia._id} | ${dia.entry.length} tweets para calcular...`)
+
+                let sentimentoParaODia = 0
+
+                for (let tweet of dia.entry) {
+                    let senti = nlp.sentifr(tweet.text)
+                    sentimentoParaODia += senti != null ? senti : 0 
+                }
+
+                sentimentos[dia._id] = sentimentoParaODia
             }
 
-           res.json({msg: "ok"})
+           res.json(sentimentos)
         } catch (err) {
             console.error(err)
 
