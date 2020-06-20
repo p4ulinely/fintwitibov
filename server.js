@@ -25,7 +25,7 @@ requireDir('./src/models')
 
 // //////////////////////////////////////////// rotas 
 app.use('/indfut', require('./src/routes/indfut'));
-app.use('/tweets', require('./src/routes/tweets'));
+app.use('/twitter', require('./src/routes/twitter'));
 
 app.listen(port, () => {
     console.log(`On PORT ${port}!`)

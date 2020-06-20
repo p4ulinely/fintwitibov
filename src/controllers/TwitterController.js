@@ -2,7 +2,7 @@ const twitter = require('twitter-lite')
 const mongoose = require('mongoose')
 const Fintwit = mongoose.model('Fintwit')
 const Indfut = mongoose.model('Indfut')
-const atomizador = require('./../services/atomiza')
+const nlp = require('./../services/nlp.js')
 require('dotenv-safe').config()
 const axios = require('axios')
 const jsdom = require('jsdom')
@@ -34,8 +34,8 @@ module.exports = {
                 screen_name: perfil,
                 include_entities: true,
                 count: 200,
-                result_type: "recent" // default: mixed
-                // until: "2020-06-11"
+                ult_type: "mixed", // mixed(default), popular, recent
+                // until: "2020-06-18"
             })
 
             for (let tweet of requestTwitter) {
@@ -75,7 +75,7 @@ module.exports = {
                     include_entities: true,
                     count: 200,
                     result_type: "mixed", // mixed (default), popular or recent
-                    // until: "2020-06-10"
+                    // until: "2020-06-14"
                 })
 
                 console.log(` :: ${requestTwitter.length} tweets coletados!`)
@@ -168,7 +168,7 @@ module.exports = {
                 frasePOST = "Estamos passando no curso um melhor entendimento do mercado aos iniciantes (e nao tao inciantes assim tb), para que… https://t.co/ERqUZ7ygsU" 
             console.log("calculando frequencias...")
 
-            let freq = frasePOST == "" ? "vazio" : atomizador.frequencia(frasePOST)
+            let freq = frasePOST == "" ? "vazio" : nlp.frequencia(frasePOST)
 
             console.log(` :: ${freq.length} frequencias calculadas para "${frasePOST}"`)
             
@@ -191,7 +191,7 @@ module.exports = {
             const tweetsBD = await Fintwit.aggregate([{
                 $group: {
                     _id : {
-                        $dateToString: { format: "%d-%m-%Y", date: "$created_at" }
+                        $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
                     },
                     entry: {
                         $push: {
@@ -225,16 +225,21 @@ module.exports = {
                 {
                     $group: {
                         _id: {
-                            $dateToString: { format: "%d-%m-%Y", date: "$created_at" }
+                            $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
                         },
                         intensidade: {
                             $sum: 1
                         }
                     }
+                },
+                {
+                    $sort: {
+                        _id: -1
+                    }
                 }
             ])
-            
-            res.json(tweetsPorDiaFINTWIT)
+
+           res.json(tweetsPorDiaFINTWIT)
         } catch (err) {
             console.error(err)
 
@@ -245,32 +250,35 @@ module.exports = {
     },
 
     async sentimentoDoDia(req, res){
-
         try {
           
             console.log("coletando e agrupando tweets do BD...")
 
-            const tweetsBD = await Fintwit.aggregate([{
-                $group: {
-                    _id : {
-                        $dateToString: { format: "%d-%m-%Y", date: "$created_at" }
-                    },
-                    entry: {
-                        $push: {
-                            text: "$text"
+            const tweetsBD = await Fintwit.aggregate([
+                {
+                    $group: {
+                        _id : {
+                            $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
+                        },
+                        entry: {
+                            $push: {
+                                text: "$text"
+                            }
                         }
                     }
+                },
+                {
+                    $sort: {
+                        _id: -1
+                    }
                 }
-                
-            }])
+            ])
 
             for (let tweet of tweetsBD) {
-                // console.log(tweet);
-                // break
                 console.log(tweet.entry[0].text);
-                let freq = atomizador.tokenize(tweet.entry[0].text)
+                let freq = nlp.atomizador(tweet.entry[0].text)
                 console.log(freq);
-                break;
+                break
             }
 
            res.json({msg: "ok"})
