@@ -1,13 +1,10 @@
 const twitter = require('twitter-lite')
 const mongoose = require('mongoose')
 const Fintwit = mongoose.model('Fintwit')
-const Indfut = mongoose.model('Indfut')
 const SentimentosPalavras = mongoose.model('SentimentosPalavras')
 const nlp = require('./../services/nlp')
 require('dotenv-safe').config()
-const axios = require('axios')
-const jsdom = require('jsdom')
-const { ttoj } = require('./../services/metodos')
+// const fs = require('fs')
 
 const client = new twitter({
     subdomain: "api", // "api" is the default (change for other subdomains)
@@ -50,7 +47,6 @@ module.exports = {
 
             return res.json(tweets)
         } catch (err) {
-
             console.error(err)
 
             return res.status(400).json({
@@ -112,7 +108,6 @@ module.exports = {
             })
 
         } catch (err) {
-
             console.error(err)
 
             return res.status(400).json({
@@ -153,7 +148,6 @@ module.exports = {
             return res.json({ tweets })
 
         } catch (err) {
-
             console.error(err)
 
             return res.status(400).json({
@@ -165,8 +159,8 @@ module.exports = {
     async calcularFrequencia(req, res) {
         try {
             
-            let frasePOST = req.params.frase || ""
-                frasePOST = "Estamos passando no curso um melhor entendimento do mercado aos iniciantes (e nao tao inciantes assim tb), para que… https://t.co/ERqUZ7ygsU" 
+            let frasePOST = req.body.frase || ""
+            frasePOST = "Estamos passando no curso um melhor entendimento do mercado aos iniciantes (e nao tao inciantes assim tb), para que… https://t.co/ERqUZ7ygsU" 
             console.log("calculando frequencias...")
 
             let freq = frasePOST == "" ? "vazio" : nlp.frequencia(frasePOST)
@@ -175,7 +169,6 @@ module.exports = {
             
             res.json({ freq })
         } catch (err) {
-
             console.error(err)
 
             res.status(400).json({
@@ -211,10 +204,9 @@ module.exports = {
                         _id: -1
                     }
                 }
-
             ])
-
-           res.json(tweetsBD)
+            // fs.writeFileSync("/Users/paulinelymorgan/git/fintwit/dados/tweets_230620.json", JSON.stringify(tweetsBD) , 'utf-8') 
+            res.json(tweetsBD)
         } catch (err) {
             console.error(err) 
 
@@ -290,8 +282,6 @@ module.exports = {
 
             console.log("calculando tokens e sentimentos dos 7 dias...")
 
-            let sentimentos = {}
-
             for (let dia of tweetsBD) {
 
                 let sentimentoParaODia = 0
@@ -312,17 +302,60 @@ module.exports = {
 
                 console.log("  : Salvando no BD...")
 
-                await SentimentosPalavras.create({
+                const diaJaExiste = await SentimentosPalavras.find({
                     data: new Date(dia._id),
-                    sentimento: sentimentoParaODia,
-                    palavras: Array.from(tokensParaODia)
                 })
 
-                console.log(`  : ${dia._id} salvo!`)
-            }
+                if (diaJaExiste.length == 0) {
+
+                    await SentimentosPalavras.create({
+                        data: new Date(dia._id),
+                        sentimento: sentimentoParaODia,
+                        palavras: Array.from(tokensParaODia)
+                    })
+
+                    console.log(`  : ${dia._id} salvo!`)
+                } else {
+                    console.log(`  : ${dia._id} ja existe!`)
+                }
+            } // for
 
            res.json({"msg": "sucesso"})
         } catch (err) {
+            console.error(err)
+
+            res.status(400).json({
+                msg: "ErrorCatch"
+            })
+        }
+    },
+
+    async mostraSentimentosSeteDia(req, res){
+        try {
+
+            const sentimentosTokens = await SentimentosPalavras.aggregate([
+                {
+                    $group: {
+                        _id : {
+                            $dateToString: { format: "%Y-%m-%d", date: "$data" }
+                        },
+                        entry: {
+                            $push: {
+                                sentimento: "$sentimento",
+                                palavras: "$palavras"
+                            }
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        _id: -1
+                    }
+                }
+            ])
+
+            res.json(sentimentosTokens)
+        } catch(err){
             console.error(err)
 
             res.status(400).json({
