@@ -42,6 +42,7 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
+- Endpoint to display tweets intensity, tweets sentiments and INDFUT historical data.
 - Websocket to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Create cloud of sentiments of last month, week and day VS IBOV volatility.
