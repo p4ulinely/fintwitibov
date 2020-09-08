@@ -40,10 +40,10 @@ const escreveArquivoJson = (obj, nome) => {
     }
 } 
 
-const lerArquivoJson = arquivo => {
+const lerArquivoJson = endereco => {
     try {
 
-        const data = fs.readFileSync(`./${arquivo}`, {encoding:'utf8', flag:'r'})
+        const data = fs.readFileSync(`${endereco}`, {encoding:'utf8', flag:'r'})
 
         return JSON.parse(data)
     } catch (err) {
@@ -58,7 +58,9 @@ const criaLibOntoPTEmArquivoJson = () => {
 }
 
 const carregaOntoPT = () => {
-    return lerArquivoJson(`lib-resumida_onto-pt.json`)
+    
+    let endereco = "/Users/paulinelymorgan/git/fintwit/src/services/lib-resumida_onto-pt.json"
+    return lerArquivoJson(endereco)
 }
 
 // retorna sentimento da palavra passada, de acordo com a lib passada
@@ -116,9 +118,9 @@ const sentimentoDaFrase = frase => {
         } 
     }
 
-    console.log(listaFrequencias)
+    // console.log(listaFrequencias)
 
-    return controle ? sentimentoFinal : null
+    return controle ? parseInt(sentimentoFinal) : null
 }
 
 // metodo que retorna frase como objeto de palavrasatomização e suas respectivas frequencias
@@ -151,7 +153,7 @@ const geraListaDeFrequenciasDasPalavras = frase => {
 const atomizador = frase => {
 
     const proibidos = [';', ',', '.', ':', '(', ')', '{', '}', '[', ']', '…', '!', '?']
-    let palavrasComFrequencias = []
+    let palavrasAtomizadas = []
     
     frase = frase.split(' ')
 
@@ -168,10 +170,10 @@ const atomizador = frase => {
         ))
         let palavraFiltrada = charsFiltrados.join('')
 
-        if(palavraFiltrada != "") palavrasComFrequencias.push(palavraFiltrada)
+        if(palavraFiltrada != "") palavrasAtomizadas.push(palavraFiltrada)
     }
     
-    return palavrasComFrequencias
+    return palavrasAtomizadas
 }
 
 // metodo para verificar se string é URL ou não

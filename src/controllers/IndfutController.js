@@ -11,7 +11,6 @@ const tryToFloat = str => {
 }
 
 module.exports = {
-
     async coletarDadosHistoricos(req, res) {
         try {
 
@@ -64,6 +63,8 @@ module.exports = {
                     qntDias++
                 } 
             }
+            
+            console.log(`dias inseridos: ${qntDias}`)
 
             res.json({"dias inseridos": qntDias})
         } catch (err) {
