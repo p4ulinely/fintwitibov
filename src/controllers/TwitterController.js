@@ -4,6 +4,7 @@ const Fintwit = mongoose.model('Fintwit')
 const SentimentosPalavras = mongoose.model('SentimentosPalavras')
 const nlp = require('./../services/nlp')
 require('dotenv-safe').config()
+const consultas_mdb = require('./../models/consultas')
 // const fs = require('fs')
 
 const client = new twitter({
@@ -222,25 +223,9 @@ module.exports = {
             console.log("coletando e agrupando tweets do BD...")
 
             // consulta para retornar quantidade de tweets por dia
-            const tweetsPorDiaFINTWIT = await Fintwit.aggregate([
-                {
-                    $group: {
-                        _id: {
-                            $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
-                        },
-                        intensidade: {
-                            $sum: 1
-                        }
-                    }
-                },
-                {
-                    $sort: {
-                        _id: -1
-                    }
-                }
-            ])
+            const tweetsPorDiaFINTWIT = await Fintwit.aggregate(consultas_mdb.intensidade_t_data_ordenado)
 
-           res.json(tweetsPorDiaFINTWIT)
+            res.json(tweetsPorDiaFINTWIT)
         } catch (err) {
             console.error(err)
 
@@ -330,29 +315,12 @@ module.exports = {
         }
     },
 
-    async mostraSentimentosSeteDia(req, res){
+    async mostraSentimentos(req, res){
         try {
 
-            const sentimentosTokens = await SentimentosPalavras.aggregate([
-                {
-                    $group: {
-                        _id : {
-                            $dateToString: { format: "%Y-%m-%d", date: "$data" }
-                        },
-                        entry: {
-                            $push: {
-                                sentimento: "$sentimento",
-                                palavras: "$palavras"
-                            }
-                        }
-                    }
-                },
-                {
-                    $sort: {
-                        _id: -1
-                    }
-                }
-            ])
+            console.log(`coletando sentimentos historicos dos tweets...`)
+
+            const sentimentosTokens = await SentimentosPalavras.aggregate(consultas_mdb.sentimento_t_data)
 
             res.json(sentimentosTokens)
         } catch(err){

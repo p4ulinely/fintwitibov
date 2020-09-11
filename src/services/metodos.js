@@ -47,4 +47,11 @@ function tableToJson(table) {
     return data
 }
 
+const tryToFloat = str => {
+    const num = parseFloat(str)
+
+    return isNaN(num) ? 0 : num
+}
+
+exports.tryToFloat = tryToFloat
 exports.ttoj = tableToJson
