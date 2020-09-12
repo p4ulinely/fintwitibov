@@ -152,14 +152,16 @@ const geraListaDeFrequenciasDasPalavras = frase => {
 // metodo para atomizador frases em palavras e suas respectivas frequencias
 const atomizador = frase => {
 
-    const proibidos = [';', ',', '.', ':', '(', ')', '{', '}', '[', ']', '…', '!', '?']
+    const proibidos = [';', ',', '.', ':', '(', ')', '{', '}', '[', ']', '…', '!', '?', '\n', 'º', '+', '-']
     let palavrasAtomizadas = []
     
     frase = frase.split(' ')
 
     for(let i = 0; i < frase.length; i++){
         palavra = frase[i].toLowerCase()
-        
+      
+        if(!isNaN(parseInt(palavra))) continue // elimina numeros
+        if(palavra.length < 2) continue // elimina letras
         if(eUmaURL(palavra)) continue // elimina urls
         if(palavra.indexOf('@') != -1) continue // elimina mencoes
         if(sw.stopword(palavra)) continue // elimina stopwords
