@@ -48,5 +48,8 @@ There are much more profiles to watch, but due to limitations on the data storin
     - Break down current SentimentosPalavras Model in two: SentimetoDia and TokensEFrequencias.
     - Change the geraSentimentosSeteDia Controller, in order to feed SentimetoDia and TokensEFrequencias Models.
     - Change/Adapt all Controllers that use SentimentosPalavras models.
+- Endpoint to display the data from the following models, either filtering by date or grouped by date range:
+    - SentimetoDia (Tweets sentiments)
+    - TokensEFrequencias (Tweets tokens and frequencies)
 - Allow mostrarDadosHistoricosMaisSentimentosMaisIntensidadesTweets Endpoint to filter by date.
 - Websocket to watch tweets, from either one or many profiles, then store them.
