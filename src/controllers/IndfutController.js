@@ -1,9 +1,7 @@
 const mongoose = require('mongoose')
 const Indfut = mongoose.model('Indfut')
 const Fintwit = mongoose.model('Fintwit')
-const axios = require('axios')
-const jsdom = require('jsdom')
-const { ttoj, tryToFloat } = require('./../services/metodos')
+const { ttoj, tryToFloat, trechoHtmlDeLink } = require('./../services/metodos')
 const consultas_mdb = require('./../models/consultas')
 const SentimentosPalavras = mongoose.model('SentimentosPalavras')
 
@@ -11,21 +9,16 @@ module.exports = {
     async coletarDadosHistoricos(req, res) {
         try {
 
-            console.log("coletando dados historicos do INDFUT, no Investing...")
+            console.log("coletando dados historicos do INDFUT")
 
-            const resultadosINVESTING = await axios.get("https://br.investing.com/indices/ibovespa-futures-historical-data")
-
-            console.log(" : convertendo dados para DOM...")
-
+            const linkInvesting = "https://br.investing.com/indices/ibovespa-futures-historical-data"
             const nomeTabelaComDados = "curr_table"
-            const doc = new jsdom.JSDOM(resultadosINVESTING.data)    
-            let tabelaResultados = doc.window.document.querySelector(`#${nomeTabelaComDados}`)
+            let tabelaResultados = await trechoHtmlDeLink(linkInvesting, nomeTabelaComDados)
 
-            console.log(" : convertendo tabela HTML para JSON...")
+            console.log(" : fazendo ajustes para insercao")
 
+            // converte tabela em HTML p/ JSON
             tabelaResultados = ttoj(tabelaResultados)
-
-            console.log(" : fazendo ajustes para insercao...")
 
             // faz conversao dos dados
             for (let dia of tabelaResultados) {
@@ -45,7 +38,7 @@ module.exports = {
                 dia["max_min"] = dia["maxima"] - dia["minima"]
             }
 
-            console.log("inserindo dados hitoricos no BD...")
+            console.log(" : inserindo dados hitoricos no BD")
             
             let qntDias = 0
 
@@ -61,7 +54,7 @@ module.exports = {
                 } 
             }
             
-            console.log(`dias inseridos: ${qntDias}`)
+            console.log(`dias inseridos: ${qntDias}.`)
 
             res.json({"dias inseridos": qntDias})
         } catch (err) {

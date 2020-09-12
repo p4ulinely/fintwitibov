@@ -43,7 +43,10 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
-- Websocket to watch tweets from specific profile
-	- Generate JSON of frequencies and store them.
-- Create cloud of sentiments of last month, week and day VS IBOV volatility.
-- Webpage to display Charts of tweets intensity VS IBOV volatility.
+- Service to collect Ajuste from B3 website to add to the INDFUT historical data.
+- Endpoint to display tokens and its frequencies
+    - Break down current SentimentosPalavras Model in two: SentimetoDia and TokensEFrequencias.
+    - Change the geraSentimentosSeteDia Controller, in order to feed SentimetoDia and TokensEFrequencias Models.
+    - Change/Adapt all Controllers that use SentimentosPalavras models.
+- Allow mostrarDadosHistoricosMaisSentimentosMaisIntensidadesTweets Endpoint to filter by date.
+- Websocket to watch tweets, from either one or many profiles, then store them.
