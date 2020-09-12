@@ -43,6 +43,10 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
+- Endpoint to display tokens and its frequencies.
+    - Break down current SentimentosPalavras Model in two: SentimetoDia and TokensEFrequencias.
+    - Change the geraSentimentosSeteDia Controller, in order to feed SentimetoDia and TokensEFrequencias Models.
+
 - Websocket to watch tweets from specific profile
 	- Generate JSON of frequencies and store them.
 - Create cloud of sentiments of last month, week and day VS IBOV volatility.
