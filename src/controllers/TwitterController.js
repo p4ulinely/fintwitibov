@@ -157,18 +157,18 @@ module.exports = {
         }
     },
 
-    async calcularFrequencia(req, res) {
+    async calcularFrequenciaParaFrase(req, res) {
         try {
             
             let frasePOST = req.body.frase || ""
             frasePOST = "Estamos passando no curso um melhor entendimento do mercado aos iniciantes (e nao tao inciantes assim tb), para que… https://t.co/ERqUZ7ygsU" 
             console.log("calculando frequencias...")
 
-            let freq = frasePOST == "" ? "vazio" : nlp.frequencia(frasePOST)
+            let frequencias_tokens = frasePOST == "" ? "vazio" : nlp.frequencias(frasePOST)
 
-            console.log(` :: ${freq.length} frequencias calculadas para "${frasePOST}"`)
+            console.log(` :: ${Object.keys(frequencias_tokens).length} frequencias calculadas para frase informada.`)
             
-            res.json({ freq })
+            res.json({ frequencias_tokens })
         } catch (err) {
             console.error(err)
 
