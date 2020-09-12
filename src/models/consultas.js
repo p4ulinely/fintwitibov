@@ -1,4 +1,6 @@
 const formatoData = "%Y-%m-%d"
+const qntDiasParaColetarTweets = 7
+
 
 const ohlcIndFuturo = 
     [{
@@ -74,7 +76,33 @@ const sentimentosTweets =
         }
     }]
 
+
+const tweetsPorDataUltimosXDias = 
+    [{
+        $match: {
+            'created_at': {'$gte': new Date((new Date().getTime() - (qntDiasParaColetarTweets * 24 * 60 * 60 * 1000)))}
+        }
+    },
+    {
+        $group: {
+            _id : {
+                $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
+            },
+            entry: {
+                $push: {
+                    text: "$text"
+                }
+            }
+        }
+    },
+    {
+        $sort: {
+            _id: -1
+        }
+    }]
+
 exports.ohlc_if_data = ohlcIndFuturo
 exports.intensidade_t_data = intensidadeTweetsPorData
 exports.intensidade_t_data_ordenado = intensidadeTweetsPorDataOrdenado
 exports.sentimento_t_data = sentimentosTweets
+exports.t_data_limitada = tweetsPorDataUltimosXDias

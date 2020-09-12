@@ -240,58 +240,33 @@ module.exports = {
           
             console.log("coletando e agrupando tweets do BD...")
 
-            const tweetsBD = await Fintwit.aggregate([
-                {
-                    $match: {
-                        'created_at': {'$gte': new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)))}
-                    }
-                },
-                {
-                    $group: {
-                        _id : {
-                            $dateToString: { format: "%Y-%m-%d", date: "$created_at" }
-                        },
-                        entry: {
-                            $push: {
-                                text: "$text"
-                            }
-                        }
-                    }
-                },
-                {
-                    $sort: {
-                        _id: -1
-                    }
-                }
-            ])
+            const tweetsBD = await Fintwit.aggregate(consultas_mdb.t_data_limitada)
 
-            console.log("calculando tokens e sentimentos dos 7 dias...")
+            console.log(`calculando tokens e sentimentos dos dias...`)
 
             for (let dia of tweetsBD) {
 
                 let sentimentoParaODia = 0
                 let tokensParaODia = new Set()
 
-                console.log(` :: dia ${dia._id} | ${dia.entry.length} tweets para calcular...`)
-
-                for (let tweet of dia.entry) {
-                    
-                    // apenas para salvar os tokens do dia
-                    let tokens = nlp.atomizador(tweet.text)
-                    for (let t of tokens) tokensParaODia.add(t)
-
-                    // calcula sentimento para frase
-                    let sentiDaFrase = nlp.sentifr(tweet.text)
-                    sentimentoParaODia += sentiDaFrase != null ? sentiDaFrase : 0 
-                }
-
-                console.log("  : Salvando no BD...")
-
                 const diaJaExiste = await SentimentosPalavras.find({
                     data: new Date(dia._id),
                 })
 
                 if (diaJaExiste.length == 0) {
+
+                    console.log(` :: dia ${dia._id} | ${dia.entry.length} tweets para calcular...`)
+
+                    for (let tweet of dia.entry) {
+
+                        // apenas para salvar os tokens do dia
+                        let tokens = nlp.atomizador(tweet.text)
+                        for (let t of tokens) tokensParaODia.add(t)
+
+                        // calcula sentimento para frase
+                        let sentiDaFrase = nlp.sentifr(tweet.text)
+                        sentimentoParaODia += sentiDaFrase != null ? sentiDaFrase : 0 
+                    }
 
                     await SentimentosPalavras.create({
                         data: new Date(dia._id),
@@ -301,7 +276,7 @@ module.exports = {
 
                     console.log(`  : ${dia._id} salvo!`)
                 } else {
-                    console.log(`  : ${dia._id} ja existe!`)
+                    console.log(` :: dia ${dia._id} ja existe!`)
                 }
             } // for
 

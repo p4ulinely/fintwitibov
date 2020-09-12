@@ -158,7 +158,7 @@ const atomizador = frase => {
     frase = frase.split(' ')
 
     for(let i = 0; i < frase.length; i++){
-        palavra = frase[i].toLowerCase()
+        let palavra = frase[i].toLowerCase()
       
         if(!isNaN(parseInt(palavra))) continue // elimina numeros
         if(palavra.length < 2) continue // elimina letras
