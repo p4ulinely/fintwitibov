@@ -1,5 +1,6 @@
 const fs = require('fs')
 const sw = require('./stop_words_pt')
+const caracteres_proibidos = require('./caracteres_proibidos')
 
 const converteOntoPTEmObjeto = () => {
 
@@ -152,7 +153,6 @@ const geraListaDeFrequenciasDasPalavras = frase => {
 // metodo para atomizador frases em palavras e suas respectivas frequencias
 const atomizador = frase => {
 
-    const proibidos = [';', ',', '.', ':', '(', ')', '{', '}', '[', ']', '…', '!', '?', '\n', 'º', '+', '-']
     let palavrasAtomizadas = []
     
     frase = frase.split(' ')
@@ -168,13 +168,15 @@ const atomizador = frase => {
 
         // elimina caracteres proibidos
         let charsFiltrados = palavra.split('').filter(char => ( 
-            !proibidos.includes(char)
+            !caracteres_proibidos.lista.includes(char)
         ))
         let palavraFiltrada = charsFiltrados.join('')
 
+        if(palavraFiltrada.length < 2) continue // elimina letras remanescentes (ex. antes de eliminar chars proibidos: e+)
+
         if(palavraFiltrada != "") palavrasAtomizadas.push(palavraFiltrada)
     }
-    
+
     return palavrasAtomizadas
 }
 
