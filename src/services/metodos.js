@@ -1,3 +1,6 @@
+const axios = require('axios')
+const stringParaDOM = require('jsdom')
+
 function novoCabecalho(headerAntigo) {
 
     const novoHeader = {
@@ -53,5 +56,15 @@ const tryToFloat = str => {
     return isNaN(num) ? 0 : num
 }
 
+const coletarTrechoHtmlDeAlgumLink = async (url, idElemento) => {
+
+    const objetoDoLink = await axios.get(url)
+    const htmlDoLink = new stringParaDOM.JSDOM(objetoDoLink.data)    
+    let htmlDoElementoDesejado = htmlDoLink.window.document.querySelector(`#${idElemento}`)
+
+    return htmlDoElementoDesejado
+}
+
 exports.tryToFloat = tryToFloat
 exports.ttoj = tableToJson
+exports.trechoHtmlDeLink = coletarTrechoHtmlDeAlgumLink
