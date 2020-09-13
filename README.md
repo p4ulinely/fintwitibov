@@ -43,6 +43,10 @@ There are much more profiles to watch, but due to limitations on the data storin
 
 ## To Do
 
+- Module for crowdsourcing labeling data (optimistic, pessimistic or neutral).
+    - Endpoint to get non-labeled tweets or unfinished ones.
+    - Post Endpoint to receive labels
+        - When finished, save tweet on the table/collection of labeled tweets.
 - Service to collect Ajuste from B3 website to add to the INDFUT historical data.
 - Endpoint to display tokens and its frequencies
     - Break down current SentimentosPalavras Model in two: SentimetoDia and TokensEFrequencias.
